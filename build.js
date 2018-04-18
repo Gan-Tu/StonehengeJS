@@ -14,7 +14,7 @@ function runBuild (f) {
     console.log('Bundling', f);
     var b = browserify('src/' + f, {
       debug: false,
-      // noparse: [ 'three' ]
+      noparse: [ 'three' ]
     });
     // b.transform(require('babelify').configure({ presets: 'es2015' }));
     b.plugin(require('bundle-collapser/plugin'));
@@ -24,7 +24,7 @@ function runBuild (f) {
     });
     b.bundle(function (err, src) {
       if (err) return reject(err);
-      console.log('Compressing', f);
+      console.log(src);
       var result = UglifyJS.minify(src.toString(), { fromString: true });
       console.log('Writing', f);
       fs.writeFile('app/js/' + f, result.code, function (err) {

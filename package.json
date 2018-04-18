@@ -1,7 +1,7 @@
 {
   "name": "cs184-final-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "The CS184 Spring 2018 Final Project by Gan Tu",
   "main": "index.js",
   "dependencies": {
     "budo": "^11.2.0",
