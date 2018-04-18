@@ -1,1 +1,1 @@
-web: open app/index.html
+web: node dev
