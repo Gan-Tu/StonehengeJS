@@ -4,7 +4,7 @@ const opn = require('opn');
 const fs = require('fs');
 const simpleHtml = require('simple-html-index');
 
-var entryPath = path.resolve('src', 'index.js');
+var entryPath = path.resolve('app/js/', 'index.js');
 budo(entryPath, {
     serve: 'js/index.js',
     live: true,
@@ -17,7 +17,7 @@ budo(entryPath, {
     },
     browserify: {
         transform: [
-            [ 'installify', { save: true } ],
+            ['installify', { save: true } ],
             ['glslify', { global: true }]
         ]
     }
