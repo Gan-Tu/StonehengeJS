@@ -77,8 +77,8 @@ window.onload = function() {
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         container.appendChild( renderer.domElement );
-        stats = new Stats();
-        container.appendChild( stats.dom );
+        // stats = new Stats();
+        // container.appendChild( stats.dom );
         // post-processing
         composer = new THREE.EffectComposer( renderer );
         var renderPass = new THREE.RenderPass( scene, camera );
@@ -111,7 +111,7 @@ window.onload = function() {
         // Update SEA3D Animations
         THREE.SEA3D.AnimationHandler.update( delta );
         render( delta );
-        stats.update();
+        // stats.update();
     }
     function render( dlt ) {
         //renderer.render( scene, camera );
