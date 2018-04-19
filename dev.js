@@ -4,11 +4,11 @@ const opn = require('opn');
 const fs = require('fs');
 const simpleHtml = require('simple-html-index');
 
-var entryPath = path.resolve('app/js/', 'index.js');
+var entryPath = path.resolve('js/', 'index.js');
 budo(entryPath, {
     serve: 'js/index.js',
     live: true,
-    dir: __dirname + '/app',
+    dir: __dirname,
     stream: process.stdout,
     defaultIndex: function (opt) {
         var html = 'index.html';
