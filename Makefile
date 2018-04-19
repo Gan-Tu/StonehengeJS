@@ -8,4 +8,4 @@ deploy:
 	git add -A
 	git commit
 	git push
-	cd -
+	cd /Users/michael-tu/github/cs184-final-project
