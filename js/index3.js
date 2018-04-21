@@ -167,6 +167,20 @@ function createObjects() {
     mountain.quaternion.copy( quat );
     convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( mountain );
+    // Mesh Experimentation
+    var teapotMass = 800;
+    pos.set( 10, 0, 10 );
+    quat.set( 0, 0, 0, 1 );
+    teapotVertices = [];
+    var scale = 0.2;
+    for (var i = 0; i < teapotPoints.length; i += 3) {
+        teapotVertices.push( new THREE.Vector3 ( teapotPoints[i + 0] * scale, teapotPoints[i + 1] * scale, teapotPoints[i + 2] * scale) );
+    }
+    var teapot = new THREE.Mesh( new THREE.ConvexGeometry( teapotVertices ), createMaterial (0xFFB443 ));
+    teapot.position.copy( pos );
+    teapot.quaternion.copy( quat );
+    convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
+    createDebrisFromBreakableObject( teapot );
 }
 function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
     var object = new THREE.Mesh( new THREE.BoxGeometry( sx, sy, sz, 1, 1, 1 ), material );

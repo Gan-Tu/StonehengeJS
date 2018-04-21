@@ -23,10 +23,11 @@ var gui = new dat.GUI();
 
 _guid_ball = gui.addFolder("Ball Parameters")
 
+var gui_ball_color = _guid_ball.add(_gui_controls, 'ballColor').name("Ball Color");
+
 _guid_ball.add(_gui_controls, 'ballMass', 5, 50, 1).name("Ball Mass");
 _guid_ball.add(_gui_controls, 'ballRadius', 0.05, 2, 0.01).name("Ball Radius");
 
-var gui_ball_color = _guid_ball.add(_gui_controls, 'ballColor').name("Ball Color");
 
 _guid_ball.open();
 
