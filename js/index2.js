@@ -152,6 +152,26 @@ function createObjects() {
 	mountain.quaternion.copy( quat );
 	convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
 	createDebrisFromBreakableObject( mountain );
+
+	// Mesh Experimentation
+	var teapotMass = 800;
+	var teapotExtents = new THREE.Vector3( 2, 2, 2 );
+	pos.set( 10, teapotExtents.y * 0.5, 10 );
+	quat.set( 0, 0, 0, 1 );
+	var teapotPoints = [];  // INSERT MESH VERTICES HERE, REMOVE VERTICES BELOW, FIXME
+	teapotPoints.push( new THREE.Vector3( teapotExtents.x, -teapotExtents.y, teapotExtents.z ));
+	teapotPoints.push( new THREE.Vector3( -teapotExtents.x, -teapotExtents.y, teapotExtents.z ));
+	teapotPoints.push( new THREE.Vector3( teapotExtents.x, -teapotExtents.y, -teapotExtents.z ));
+	teapotPoints.push( new THREE.Vector3( -teapotExtents.x, -teapotExtents.y, -teapotExtents.z ));
+	teapotPoints.push( new THREE.Vector3( teapotExtents.x, teapotExtents.y, teapotExtents.z ));
+	teapotPoints.push( new THREE.Vector3( -teapotExtents.x, teapotExtents.y, teapotExtents.z ));
+	teapotPoints.push( new THREE.Vector3( teapotExtents.x, teapotExtents.y, -teapotExtents.z ));
+	teapotPoints.push( new THREE.Vector3( -teapotExtents.x, teapotExtents.y, -teapotExtents.z ));
+	var teapot = new THREE.Mesh( new THREE.ConvexGeometry( teapotPoints ), createMaterial (0xFFB443 ));
+	teapot.position.copy( pos );
+	teapot.quaternion.copy( quat );
+	convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
+	createDebrisFromBreakableObject( teapot );
 }
 function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
 	var object = new THREE.Mesh( new THREE.BoxGeometry( sx, sy, sz, 1, 1, 1 ), material );
