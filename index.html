@@ -14,13 +14,33 @@
 
         <link rel="stylesheet" type="text/css" href="css/style.css">
 
+        <style>
+            body {
+                color: #61443e;
+                font-family:Monospace;
+                font-size:13px;
+                text-align:center;
+                background-color: #bfd1e5;
+                margin: 0px;
+                overflow: hidden;
+            }
+            #info {
+                position: absolute;
+                top: 0px; width: 100%;
+                padding: 5px;
+            }
+            a {
+                color: #a06851;
+            }
+        </style>
+
     </head>
     <body>
         <div class="mobile" style="display: none">
             <p>Sorry, this project is not designed for mobile devices.</p>
         </div>
 
-        <div id="info">
+<!--         <div id="info">
             <a href="https://gibbes.github.io/finalproj-cs184/" target="_blank" rel="noopener">Project Proposal</a> - Created by Gan Tu, Michael Gibbes, Noah Jacobs</a>
             
             <br><br>Dynamic Physics Interaction System<br>
@@ -34,7 +54,10 @@
             <span><a href="https://github.com/edankwan/SMASHING-Mega-Scene" target="_blank">Github</a></span>
             <span>|</span>
             <span><a href="https://www.youtube.com/watch?v=nR7uJdP_HRk" target="_blank">Youtube</a></span>
-        </div>
+        </div> -->
+
+        <div id="info">Physics threejs demo with convex objects breaking in real time<br />Press mouse to throw balls and move the camera.</div>
+        <div id="container"><br /><br /><br /><br /><br />Loading...</div>
 
 
         <script src="js/three.min.js"></script>
@@ -59,6 +82,16 @@
         <script src="js/threejs-js/Detector.js"></script>
         <script src="js/threejs-js/libs/stats.min.js"></script>
 
-        <script src="js/index.js"></script>
+
+        <script src="js/threejs-js/libs/ammo.js"></script>
+        <script src="js/threejs-js/controls/OrbitControls.js"></script>
+        <script src="js/threejs-js/Detector.js"></script>
+        <script src="js/threejs-js/libs/stats.min.js"></script>
+        <script src="js/threejs-js/ConvexObjectBreaker.js"></script>
+        <script src="js/threejs-js/QuickHull.js"></script>
+        <script src="js/threejs-js/geometries/ConvexGeometry.js"></script>
+
+
+        <script src="js/index2.js"></script>
     </body>
 </html>
