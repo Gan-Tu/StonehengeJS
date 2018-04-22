@@ -12,8 +12,8 @@ var GUI_Control = function() {
 }
 
 
-_gui_controls = _gui_controls = new GUI_Control();
-gui = gui = new dat.GUI();
+var _gui_controls = new GUI_Control();
+var gui = new dat.GUI();
 
 
 _guid_ball = gui.addFolder("Ball Parameters")

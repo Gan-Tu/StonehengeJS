@@ -1,3 +1,68 @@
+// GUIs
+
+var GUI_Control = function() {
+    this.ballMass = 35;
+    this.ballRadius = 0.4;
+    this.ballColor = '#202020';
+    
+    this.towerMass = 1000;
+    this.bridgeMass = 250;
+    this.stoneMass = 120;
+    this.numStones = 5;
+    this.mountainMass = 860;
+    this.teapotMass = 860;
+
+    this.numStonesAdd = 2;
+
+    this.addStone = function add_stones() {
+        // Stones
+        var stoneMass = _gui_controls.stoneMass;
+        var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
+        quat.set( 0, Math.random(), 0, 1 );
+        var num = this.numStonesAdd;
+
+        for ( var i = 0; i < num; i++ ) {
+            pos.set( Math.random() * 10 - 5, 
+                    Math.random() * 10 - 5, 
+                    15 * ( Math.random() - i / ( num + 1 ) ) );
+            createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
+        }
+    };
+}
+
+
+var _gui_controls = new GUI_Control();
+var gui = new dat.GUI();
+
+
+_guid_ball = gui.addFolder("Ball Parameters")
+
+var gui_ball_color = _guid_ball.add(_gui_controls, 'ballColor').name("Ball Color");
+_guid_ball.add(_gui_controls, 'ballMass', 5, 50, 1).name("Ball Mass");
+_guid_ball.add(_gui_controls, 'ballRadius', 0.05, 2, 0.01).name("Ball Radius");
+_guid_ball.open();
+
+
+_guid_scene = gui.addFolder("Scene Objects")
+_guid_scene.add(_gui_controls, 'towerMass', 100, 2000, 50).name("Tower Mass");
+_guid_scene.add(_gui_controls, 'bridgeMass', 10, 500, 10).name("Bridge Mass");
+_guid_scene.add(_gui_controls, 'stoneMass', 10, 500, 10).name("Stone Mass");
+_guid_scene.add(_gui_controls, 'mountainMass', 100, 2000, 10).name("Mountain Mass");
+_guid_scene.add(_gui_controls, 'teapotMass', 100, 2000, 10).name("Teapot Mass");
+_guid_scene.open();
+
+_guid_add = gui.addFolder("Add Things")
+_guid_add.add(_gui_controls, 'numStonesAdd', 1, 5, 1).name("Number of Stones to Add");
+_guid_add.add(_gui_controls, 'addStone');
+_guid_add.open();
+
+// Disable event listeners on menu
+gui.domElement.addEventListener('mousedown', _stopPropagation);
+
+function _stopPropagation(evt) {
+    evt.stopPropagation();
+}
+
 // PARTICLES 
 var container, stats;
 var camera, controls, scene, renderer;
@@ -147,7 +212,7 @@ function createObjects() {
     // Stones
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
-    var numStones = 8; //_gui_controls.numStones;
+    var numStones = _gui_controls.numStones;
     quat.set( 0, 0, 0, 1 );
     for ( var i = 0; i < numStones; i++ ) {
         pos.set( 0, 2, 15 * ( 0.5 - i / ( numStones + 1 ) ) );
@@ -186,6 +251,7 @@ function createObjects() {
     convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( teapot );
 }
+
 function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
     var object = new THREE.Mesh( new THREE.BoxGeometry( sx, sy, sz, 1, 1, 1 ), material );
     var shape = new Ammo.btBoxShape( new Ammo.btVector3( sx * 0.5, sy * 0.5, sz * 0.5 ) );
@@ -193,6 +259,7 @@ function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material 
     createRigidBody( object, shape, mass, pos, quat );
     return object;
 }
+
 function createDebrisFromBreakableObject( object ) {
     object.castShadow = true;
     object.receiveShadow = true;
@@ -204,10 +271,12 @@ function createDebrisFromBreakableObject( object ) {
     btVecUserData.threeObject = object;
     body.setUserPointer( btVecUserData );
 }
+
 function removeDebris( object ) {
     scene.remove( object );
     physicsWorld.removeRigidBody( object.userData.physicsBody );
 }
+
 function createConvexHullPhysicsShape( points ) {
     var shape = new Ammo.btConvexHullShape();
     for ( var i = 0, il = points.length; i < il; i++ ) {
@@ -218,6 +287,7 @@ function createConvexHullPhysicsShape( points ) {
     }
     return shape;
 }
+
 function createRigidBody( object, physicsShape, mass, pos, quat, vel, angVel ) {
     if ( pos ) {
         object.position.copy( pos );
@@ -258,13 +328,16 @@ function createRigidBody( object, physicsShape, mass, pos, quat, vel, angVel ) {
     physicsWorld.addRigidBody( body );
     return body;
 }
+
 function createRandomColor() {
     return Math.floor( Math.random() * ( 1 << 24 ) );
 }
+
 function createMaterial( color ) {
     color = color || createRandomColor();
     return new THREE.MeshPhongMaterial( { color: color } );
 }
+
 function initInput() {
     window.addEventListener( 'mousedown', function( event ) {
         mouseCoords.set(
@@ -273,8 +346,6 @@ function initInput() {
         );
         raycaster.setFromCamera( mouseCoords, camera );
         // Creates a ball and throws it
-        // var ballMass = 35;
-        // var ballRadius = 0.4;
         var ball = new THREE.Mesh( new THREE.SphereGeometry( _gui_controls.ballRadius, 14, 10 ), ballMaterial );
         ball.castShadow = true;
         ball.receiveShadow = true;
@@ -289,6 +360,7 @@ function initInput() {
         ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
     }, false );
 }
+
 function updatePhysics( deltaTime ) {
     // Step world
     physicsWorld.stepSimulation( deltaTime, 10 );
@@ -371,6 +443,7 @@ function updatePhysics( deltaTime ) {
     }
     numObjectsToRemove = 0;
 }
+
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
