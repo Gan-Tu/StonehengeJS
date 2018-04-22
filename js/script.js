@@ -1,7 +1,8 @@
 /************************************* VARIABLES *************************************/
 
-// Particle Time Ticks
+// Particle
 var tick = 0;
+var particleSystem;
 
 // Three.js Rendering Logics
 var container, stats;
@@ -16,12 +17,10 @@ var raycaster = new THREE.Raycaster();
 var ballMaterial = new THREE.MeshPhongMaterial();
 
 // Physics variables
-var gravityConstant = 7.8;
 var collisionConfiguration;
 var dispatcher;
 var broadphase;
 var solver;
-var physicsWorld;
 var margin = 0.05;
 var convexBreaker = new THREE.ConvexObjectBreaker();
 
@@ -44,7 +43,6 @@ var impactNormal = new THREE.Vector3();
 /************************************* INITIALIZATIONS *************************************/
 
 initGraphics();
-initPhysics();
 createObjects();
 
 
@@ -102,16 +100,6 @@ function initGraphics() {
     container.appendChild( stats.domElement );
 }
 
-function initPhysics() {
-    // Physics configuration
-    collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-    dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
-    broadphase = new Ammo.btDbvtBroadphase();
-    solver = new Ammo.btSequentialImpulseConstraintSolver();
-    physicsWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
-    physicsWorld.setGravity( new Ammo.btVector3( 0, - gravityConstant, 0 ) );
-}
-
 /************************************* OBJECTS CREATION *************************************/
 
 function createObjects() {
@@ -159,7 +147,7 @@ function place_main_scene() {
     pos.set( 0, 10.2, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB38835 ) );
-    
+
     // Stones
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
@@ -216,7 +204,7 @@ function place_bunny() {
 
             var bunny;
 
-            textureLoader.load( "textures/metal.jpg", 
+            textureLoader.load( "textures/metal.jpg",
                 function( texture )
             {
                 texture.wrapS = THREE.RepeatWrapping;
@@ -247,7 +235,7 @@ function place_tree() {
 
             var tree;
 
-            textureLoader.load( "textures/terrain/grasslight-big.jpg", 
+            textureLoader.load( "textures/terrain/grasslight-big.jpg",
                 function( texture )
             {
                 console.log(texture);
