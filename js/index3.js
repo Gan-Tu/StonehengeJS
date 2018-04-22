@@ -1,13 +1,13 @@
 // RENDERING LOGIC
 
-// PARTICLES 
+// PARTICLES
 var container, stats;
 var camera, controls, scene, renderer;
 var textureLoader;
 var clock = new THREE.Clock();
 var mouseCoords = new THREE.Vector2();
 var raycaster = new THREE.Raycaster();
-var ballMaterial = new THREE.MeshPhongMaterial( { 
+var ballMaterial = new THREE.MeshPhongMaterial( {
     color: new THREE.Color(_gui_controls.ballColor)
 } );
 
@@ -43,7 +43,7 @@ init();
 animate();
 
 function init() {
-    
+
     initGraphics();
     initPhysics();
     createObjects();
@@ -58,7 +58,7 @@ function initGraphics() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xbfd1e5 );
     camera.position.set( -14, 8, 16 );
-    
+
     controls = new THREE.OrbitControls( camera);
     controls.target.set( 0, 2, 0 );
     controls.update();
@@ -66,12 +66,12 @@ function initGraphics() {
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.shadowMap.enabled = true;
-    
+
     textureLoader = new THREE.TextureLoader();
-    
+
     var ambientLight = new THREE.AmbientLight( 0x707070 );
     scene.add( ambientLight );
-    
+
     var light = new THREE.DirectionalLight( 0xffffff, 1 );
     light.position.set( -10, 18, 5 );
     light.castShadow = true;
@@ -85,10 +85,10 @@ function initGraphics() {
     light.shadow.mapSize.x = 1024;
     light.shadow.mapSize.y = 1024;
     scene.add( light );
-    
+
     container.innerHTML = "";
     container.appendChild( renderer.domElement );
-    
+
     stats = new Stats();
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.top = '0px';
@@ -106,9 +106,9 @@ function initPhysics() {
     physicsWorld.setGravity( new Ammo.btVector3( 0, - gravityConstant, 0 ) );
 }
 function createObject( mass, halfExtents, pos, quat, material ) {
-    var object = new THREE.Mesh( 
-        new THREE.BoxGeometry(  halfExtents.x * 2, 
-                                halfExtents.y * 2, 
+    var object = new THREE.Mesh(
+        new THREE.BoxGeometry(  halfExtents.x * 2,
+                                halfExtents.y * 2,
                                 halfExtents.z * 2 ), material );
     object.position.copy( pos );
     object.quaternion.copy( quat );
@@ -139,14 +139,14 @@ function createObjects() {
     pos.set( 8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF4A321 ) );
-    
+
     //Bridge
     var bridgeMass = _gui_controls.bridgeMass;
     var bridgeHalfExtents = new THREE.Vector3( 7, 0.2, 1.5 );
     pos.set( 0, 10.2, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB38835 ) );
-    
+
     // Stones
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
@@ -173,17 +173,26 @@ function createObjects() {
     mountain.quaternion.copy( quat );
     convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( mountain );
-    
+
     // Mesh Experimentation
     var teapotMass = _gui_controls.teapotMass;
     pos.set( 10, 0, 10 );
     quat.set( 0, 0, 0, 1 );
     teapotVertices = [];
     var scale = 0.2;
+    var threeGeo = new THREE.Geometry();
     for (var i = 0; i < teapotPoints.length; i += 3) {
-        teapotVertices.push( new THREE.Vector3 ( teapotPoints[i + 0] * scale, teapotPoints[i + 1] * scale, teapotPoints[i + 2] * scale) );
+        threeGeo.vertices.push( new THREE.Vector3( teapotPoints[i + 0] * scale, teapotPoints[i + 1] * scale, teapotPoints[i + 2] * scale) );
     }
-    var teapot = new THREE.Mesh( new THREE.ConvexGeometry( teapotVertices ), createMaterial (0xFFB443 ));
+    for (var i = 0; i < teapotFaces.length; i += 3) {
+        var f1 = teapotFaces[i + 0], f2 = teapotFaces[i + 1], f3 = teapotFaces[i + 2];
+        var n0 = (teapotNormals[f1 + 0], teapotNormals[f2 + 0], teapotNormals[f3 + 0]) / 3.0;
+        var n1 = (teapotNormals[f1 + 1], teapotNormals[f2 + 1], teapotNormals[f3 + 1]) / 3.0;
+        var n2 = (teapotNormals[f1 + 2], teapotNormals[f2 + 2], teapotNormals[f3 + 2]) / 3.0;
+        var n = new THREE.Vector3(n0, n1, n2);
+        threeGeo.faces.push( new THREE.Face3( f1, f2, f3, n ) );
+    }
+    var teapot = new THREE.Mesh( threeGeo, createMaterial (0xFFB443 ));
     teapot.position.copy( pos );
     teapot.quaternion.copy( quat );
     convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
@@ -391,5 +400,3 @@ function render() {
     renderer.render( scene, camera );
     time += deltaTime;
 }
-
-
