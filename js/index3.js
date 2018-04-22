@@ -4,7 +4,7 @@ var GUI_Control = function() {
     this.ballMass = 35;
     this.ballRadius = 0.4;
     this.ballColor = '#202020';
-    
+
     this.towerMass = 1000;
     this.bridgeMass = 250;
     this.stoneMass = 120;
@@ -21,8 +21,8 @@ var GUI_Control = function() {
         var num = this.numStonesAdd;
 
         for ( var i = 0; i < num; i++ ) {
-            pos.set( Math.random() * 10 - 5, 
-                    Math.random() * 10 - 5, 
+            pos.set( Math.random() * 10 - 5,
+                    Math.random() * 10 - 5,
                     15 * ( Math.random() - i / ( num + 1 ) ) );
             createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
         }
@@ -181,7 +181,7 @@ function createObjects() {
     // Ground
     pos.set( 0, - 0.5, 0 );
     quat.set( 0, 0, 0, 1 );
-    var ground = createParalellepipedWithPhysics( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
+    var ground = createCylinderWithPhysics( 40, 1, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
     ground.receiveShadow = true;
     textureLoader.load( "textures/brick_roughness.jpg", function( texture ) {
         texture.wrapS = THREE.RepeatWrapping;
@@ -265,6 +265,14 @@ function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material 
     var object = new THREE.Mesh( new THREE.BoxGeometry( sx, sy, sz, 1, 1, 1 ), material );
     var shape = new Ammo.btBoxShape( new Ammo.btVector3( sx * 0.5, sy * 0.5, sz * 0.5 ) );
     shape.setMargin( margin );
+    createRigidBody( object, shape, mass, pos, quat );
+    return object;
+}
+
+function createCylinderWithPhysics( radius, height, mass, pos, quat, material ) {
+    object = new THREE.Mesh( new THREE.CylinderGeometry( radius, radius, height, 20, 1 ), material );
+    shape = new Ammo.btCylinderShape( new Ammo.btVector3( radius, height * 0.5, radius ) );
+    shape.setMargin(margin);
     createRigidBody( object, shape, mass, pos, quat );
     return object;
 }
