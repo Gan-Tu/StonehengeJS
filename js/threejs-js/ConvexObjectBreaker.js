@@ -30,7 +30,7 @@
 
 THREE.ConvexObjectBreaker = function( minSizeForBreak, smallDelta ) {
 
-	this.minSizeForBreak = minSizeForBreak || 1.4;
+	this.minSizeForBreak = minSizeForBreak; //|| 0.4;
 	this.smallDelta = smallDelta || 0.0001;
 
 	this.tempLine1 = new THREE.Line3();
@@ -44,7 +44,7 @@ THREE.ConvexObjectBreaker = function( minSizeForBreak, smallDelta ) {
 	this.tempResultObjects = { object1: null, object2: null };
 
 	this.segments = [];
-	var n = 30 * 30;
+	var n = 200 * 200;
 	for ( var i = 0; i < n; i++ ) {
 		this.segments[ i ] = false;
 	}

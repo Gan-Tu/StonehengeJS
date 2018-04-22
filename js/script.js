@@ -23,7 +23,7 @@ var dispatcher;
 var broadphase;
 var solver;
 var margin = 0.05;
-var convexBreaker = new THREE.ConvexObjectBreaker();
+var convexBreaker = new THREE.ConvexObjectBreaker(0.02, 0.001);
 
 
 // Rigid bodies include all movable objects
@@ -114,8 +114,40 @@ function createObjects() {
     place_bunny();
     place_tree();
     place_particles();
+    place_rocks();
 }
 
+function place_rocks() {
+    var stone2HalfExtents = new THREE.Vector3( -10, 0, 10 );
+    jsonLoader.load(
+        'models/stone2.json',
+        function (geometry, material) {
+            console.log("stone " + geometry);
+            var stone_pos = new THREE.Vector3(stone2HalfExtents.x * 2,
+                                             stone2HalfExtents.y * 2, 
+                                             stone2HalfExtents.z * 2);
+            var stone_scale = 0.01;
+
+            geometry.scale(stone_scale, stone_scale, stone_scale);
+
+            var stone;
+
+            textureLoader.load( "textures/stone.jpg",
+                function( texture )
+            {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set( 40, 40 );
+                stone = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { map: texture } ) );
+                stone.position.copy( stone_pos );
+                stone.quaternion.copy( quat );
+
+                convexBreaker.prepareBreakableObject( stone, 200, new THREE.Vector3(), new THREE.Vector3(), true );
+                createDebrisFromBreakableObject( stone );
+            } );
+        }
+    );
+}
 
 
 function place_ground() {
@@ -139,6 +171,7 @@ function place_main_scene() {
     var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
     pos.set( -8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
+    console.log("hi");
     createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF0A024 ) );
 
     // Tower 2
@@ -184,13 +217,14 @@ function place_main_scene() {
 
 function place_teapot() {
     var teapotMass = _gui_controls.teapotMass;
-    pos.set(0, 11.2, 0);
-    quat.set( 0, 0, 0, 1 );
+    var teapot_pos = new THREE.Vector3(0, 11.2, 0);
+    var teapot_quat = new THREE.Vector4( 0, 0, 0, 1 );
+
     var threeGeo = new THREE.Geometry().fromBufferGeometry(
                 new THREE.TeapotBufferGeometry(2, 5, true, true, true, false, true));
     var teapot = new THREE.Mesh( threeGeo, createMaterial (0xA2A09F));
-    teapot.position.copy( pos );
-    teapot.quaternion.copy( quat );
+    teapot.position.copy( teapot_pos );
+    teapot.quaternion.copy( teapot_quat );
     convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( teapot );
 
@@ -201,8 +235,8 @@ function place_bunny() {
         'models/bunny.json',
         function ( geometry, materials ) {
             var bunny_mass = _gui_controls.bunnyMass;
-            pos.set(0, -1.5, 15);
-            quat.set( 0, 0, 0, 1 );
+            var bunny_pos = new THREE.Vector3(0, -1.5, 15);
+            var bunny_quat = new THREE.Vector4( 0, 0, 0, 1 );
 
             var bunny_scale = 30.;
             geometry.scale(bunny_scale,bunny_scale,bunny_scale);
@@ -217,8 +251,8 @@ function place_bunny() {
                 texture.repeat.set( 40, 40 );
                 bunny = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
                 bunny.material.map = texture;
-                bunny.position.copy( pos );
-                bunny.quaternion.copy( quat );
+                bunny.position.copy( bunny_pos );
+                bunny.quaternion.copy( bunny_quat );
                 convexBreaker.prepareBreakableObject( bunny, bunny_mass, new THREE.Vector3(), new THREE.Vector3(), true );
                 createDebrisFromBreakableObject( bunny );
             } );
@@ -232,8 +266,8 @@ function place_tree() {
         'models/tree.json',
         function ( geometry, materials ) {
             var tree_mass = _gui_controls.treeMass;
-            pos.set(0, -1.5, 25);
-            quat.set( 0, 0, 0, 1 );
+            var tree_pos = new THREE.Vector3(10, -1.5, 25);
+            var tree_quat = new THREE.Vector4( 0, 0, 0, 1 );
 
             var tree_scale = 10.;
             geometry.scale(tree_scale,tree_scale,tree_scale);
@@ -249,8 +283,8 @@ function place_tree() {
                 texture.repeat.set( 40, 40 );
                 tree = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
                 tree.material.map = texture;
-                tree.position.copy( pos );
-                tree.quaternion.copy( quat );
+                tree.position.copy( tree_pos );
+                tree.quaternion.copy( tree_quat );
                 convexBreaker.prepareBreakableObject( tree, tree_mass, new THREE.Vector3(), new THREE.Vector3(), true );
                 createDebrisFromBreakableObject( tree );
             } );

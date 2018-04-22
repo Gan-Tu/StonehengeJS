@@ -4,9 +4,9 @@ const opn = require('opn');
 const fs = require('fs');
 const simpleHtml = require('simple-html-index');
 
-var entryPath = path.resolve('js/', 'script.js');
+var entryPath = path.resolve('js/', 'dev.js');
 budo(entryPath, {
-    serve: 'js/script.js',
+    serve: 'js/dev.js',
     live: true,
     dir: __dirname,
     stream: process.stdout,
