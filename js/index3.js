@@ -10,7 +10,7 @@ var GUI_Control = function() {
     this.stoneMass = 120;
     this.numStones = 5;
     this.mountainMass = 860;
-    this.teapotMass = 860;
+    this.teapotMass = 300;
 
     this.numStonesAdd = 2;
 
@@ -69,9 +69,8 @@ var textureLoader;
 var clock = new THREE.Clock();
 var mouseCoords = new THREE.Vector2();
 var raycaster = new THREE.Raycaster();
-var ballMaterial = new THREE.MeshPhongMaterial( {
-    color: new THREE.Color(_gui_controls.ballColor)
-} );
+var ballMaterial = new THREE.MeshPhongMaterial();
+
 
 
 // Physics variables
@@ -99,6 +98,12 @@ var numObjectsToRemove = 0;
 var impactPoint = new THREE.Vector3();
 var impactNormal = new THREE.Vector3();
 
+// Particle Cow
+var avgVertexNormals = [];
+var avgVertexCount = [];
+var doExplode = true;
+var sphere;
+
 
 init();
 animate();
@@ -117,7 +122,8 @@ function initGraphics() {
 
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x444444 );
+    scene.background = new THREE.TextureLoader().load( 'textures/dark-room.jpg' );
+
     camera.position.set( -14, 8, 16 );
 
     controls = new THREE.OrbitControls( camera);
@@ -158,6 +164,7 @@ function initGraphics() {
 
     window.addEventListener( 'resize', onWindowResize, false );
 }
+
 function initPhysics() {
     // Physics configuration
     collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
@@ -167,6 +174,7 @@ function initPhysics() {
     physicsWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
     physicsWorld.setGravity( new Ammo.btVector3( 0, - gravityConstant, 0 ) );
 }
+
 function createObject( mass, halfExtents, pos, quat, material ) {
     var object = new THREE.Mesh(
         new THREE.BoxGeometry(  halfExtents.x * 2,
@@ -177,13 +185,14 @@ function createObject( mass, halfExtents, pos, quat, material ) {
     convexBreaker.prepareBreakableObject( object, mass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( object );
 }
+
 function createObjects() {
     // Ground
     pos.set( 0, - 0.5, 0 );
     quat.set( 0, 0, 0, 1 );
     var ground = createCylinderWithPhysics( 40, 1, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
     ground.receiveShadow = true;
-    textureLoader.load( "textures/brick_roughness.jpg", function( texture ) {
+    textureLoader.load( "textures/water/Water_1_M_Normal.jpg", function( texture ) {
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set( 40, 40 );
@@ -197,6 +206,7 @@ function createObjects() {
     pos.set( -8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF0A024 ) );
+
     // Tower 2
     pos.set( 8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
@@ -236,29 +246,81 @@ function createObjects() {
     convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( mountain );
 
-    // Mesh Experimentation
+    // Teapot 
+
     var teapotMass = _gui_controls.teapotMass;
-    pos.set( 10, 0, 10 );
+    pos.set(0, 11.2, 0);
     quat.set( 0, 0, 0, 1 );
-    teapotVertices = [];
-    var scale = 0.2;
-    var threeGeo = new THREE.Geometry();
-    for (var i = 0; i < teapotPoints.length; i += 3) {
-        threeGeo.vertices.push( new THREE.Vector3( teapotPoints[i + 0] * scale, teapotPoints[i + 1] * scale, teapotPoints[i + 2] * scale) );
-    }
-    for (var i = 0; i < teapotFaces.length; i += 3) {
-        var f1 = teapotFaces[i + 0], f2 = teapotFaces[i + 1], f3 = teapotFaces[i + 2];
-        var n0 = (teapotNormals[f1 + 0], teapotNormals[f2 + 0], teapotNormals[f3 + 0]) / 3.0;
-        var n1 = (teapotNormals[f1 + 1], teapotNormals[f2 + 1], teapotNormals[f3 + 1]) / 3.0;
-        var n2 = (teapotNormals[f1 + 2], teapotNormals[f2 + 2], teapotNormals[f3 + 2]) / 3.0;
-        var n = new THREE.Vector3(n0, n1, n2);
-        threeGeo.faces.push( new THREE.Face3( f1, f2, f3, n ) );
-    }
-    var teapot = new THREE.Mesh( threeGeo, createMaterial (0xFFB443 ));
+    var threeGeo = new THREE.Geometry().fromBufferGeometry(
+                new THREE.TeapotBufferGeometry(2, 5, true, true, true, false, true));
+    var teapot = new THREE.Mesh( threeGeo, createMaterial (0xA2A09F));
     teapot.position.copy( pos );
     teapot.quaternion.copy( quat );
     convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( teapot );
+
+    // Bunny
+
+    (new THREE.JSONLoader()).load(
+        'models/bunny.json',
+        function ( geometry, materials ) {
+            var bunny_mass = 300;
+            pos.set(5, -1.5, 15);
+            quat.set( 0, 0, 0, 1 );
+
+            var bunny_scale = 30.;
+            geometry.scale(bunny_scale,bunny_scale,bunny_scale);
+
+            var bunny;
+
+            textureLoader.load( "textures/metal.jpg", 
+                function( texture )
+            {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set( 40, 40 );
+                bunny = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
+                bunny.material.map = texture;
+                bunny.position.copy( pos );
+                bunny.quaternion.copy( quat );
+                convexBreaker.prepareBreakableObject( bunny, bunny_mass, new THREE.Vector3(), new THREE.Vector3(), true );
+                createDebrisFromBreakableObject( bunny );
+            } );
+            createDebrisFromBreakableObject( bunny );
+        }
+    );
+
+    // Tree
+    (new THREE.JSONLoader()).load(
+        'models/tree.json',
+        function ( geometry, materials ) {
+            var tree_mass = 300;
+            pos.set(5, -1.5, 25);
+            quat.set( 0, 0, 0, 1 );
+
+            var tree_scale = 10.;
+            geometry.scale(tree_scale,tree_scale,tree_scale);
+
+            var tree;
+
+            textureLoader.load( "textures/terrain/grasslight-big.jpg", 
+                function( texture )
+            {
+                console.log(texture);
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set( 40, 40 );
+                tree = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
+                tree.material.map = texture;
+                tree.position.copy( pos );
+                tree.quaternion.copy( quat );
+                convexBreaker.prepareBreakableObject( tree, tree_mass, new THREE.Vector3(), new THREE.Vector3(), true );
+                createDebrisFromBreakableObject( tree );
+            } );
+        }
+    );
+
+
 }
 
 function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
@@ -362,8 +424,17 @@ function initInput() {
             - ( event.clientY / window.innerHeight ) * 2 + 1
         );
         raycaster.setFromCamera( mouseCoords, camera );
-        // Creates a ball and throws it
+
         var ball = new THREE.Mesh( new THREE.SphereGeometry( _gui_controls.ballRadius, 14, 10 ), ballMaterial );
+
+        textureLoader.load( "textures/marble.jpg", function( texture ) {
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set( 40, 40 );
+            ball.material.map = texture;
+            ball.material.needsUpdate = true;
+        } );
+
         ball.castShadow = true;
         ball.receiveShadow = true;
         var ballShape = new Ammo.btSphereShape( _gui_controls.ballRadius );
