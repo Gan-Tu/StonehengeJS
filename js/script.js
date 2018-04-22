@@ -5,10 +5,11 @@ var tick = 0;
 var particleSystem;
 
 // Three.js Rendering Logics
-var container, stats;
+var container;
+var stats;
 var camera, controls, scene, renderer;
-var textureLoader = new THREE.TextureLoader();;
-var jsonLoader = new THREE.JSONLoader()
+var textureLoader = new THREE.TextureLoader();
+var jsonLoader = new THREE.JSONLoader();
 var clock = new THREE.Clock();
 var mouseCoords = new THREE.Vector2();
 var raycaster = new THREE.Raycaster();
@@ -54,8 +55,8 @@ function init() {
 function initGraphics() {
 
     // Initialize Graphics Canvas Container
-    container.innerHTML = "";
     container = document.getElementById( 'container' );
+    container.innerHTML = "";
 
     // Initialize Camera Settings
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
@@ -257,10 +258,7 @@ function place_tree() {
     );
 }
 
-
-// Particle
-
-function init_particle() {
+function place_particles() {
     particleSystem =  new THREE.GPUParticleSystem( {
         maxParticles: 250000
     });
