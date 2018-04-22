@@ -15,7 +15,6 @@ var GUI_Control = function() {
     this.numStonesAdd = 2;
 
     this.addStone = function add_stones() {
-        // Stones
         var stoneMass = _gui_controls.stoneMass;
         var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
         quat.set( 0, Math.random(), 0, 1 );
@@ -118,12 +117,13 @@ function initGraphics() {
 
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xbfd1e5 );
+    scene.background = new THREE.Color( 0x444444 );
     camera.position.set( -14, 8, 16 );
 
     controls = new THREE.OrbitControls( camera);
     controls.target.set( 0, 2, 0 );
     controls.update();
+
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
@@ -183,7 +183,7 @@ function createObjects() {
     quat.set( 0, 0, 0, 1 );
     var ground = createParalellepipedWithPhysics( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
     ground.receiveShadow = true;
-    textureLoader.load( "textures/grid.png", function( texture ) {
+    textureLoader.load( "textures/brick_roughness.jpg", function( texture ) {
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set( 40, 40 );
