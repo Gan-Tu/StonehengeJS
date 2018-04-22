@@ -42,9 +42,13 @@ var impactNormal = new THREE.Vector3();
 
 /************************************* INITIALIZATIONS *************************************/
 
-initGraphics();
-createObjects();
+init(); 
 
+function init() {
+    initGraphics();
+    createObjects();
+    init_particle();
+}
 
 // Initialize Graphics
 function initGraphics() {
@@ -253,9 +257,13 @@ function place_tree() {
     );
 }
 
-function place_particles() {
-    particleSystem = new THREE.GPUParticleSystem( {
+
+// Particle
+
+function init_particle() {
+    particleSystem =  new THREE.GPUParticleSystem( {
         maxParticles: 250000
-    } );
+    });
     scene.add( particleSystem );
 }
+

@@ -1,7 +1,6 @@
 
 animate();
 
-
 /************************************* MAIN RENDERING *************************************/
 
 function animate() {
@@ -29,6 +28,7 @@ function render() {
         }
     }
     particleSystem.update( tick );
+
     // Render Again
     renderer.render( scene, camera );
     // Increase Timer
