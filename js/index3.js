@@ -1,5 +1,3 @@
-// RENDERING LOGIC
-
 // PARTICLES 
 var container, stats;
 var camera, controls, scene, renderer;
@@ -12,7 +10,6 @@ var ballMaterial = new THREE.MeshPhongMaterial( {
 } );
 
 
-
 // Physics variables
 var gravityConstant = 7.8;
 var collisionConfiguration;
@@ -22,6 +19,7 @@ var solver;
 var physicsWorld;
 var margin = 0.05;
 var convexBreaker = new THREE.ConvexObjectBreaker();
+
 // Rigid bodies include all movable objects
 var rigidBodies = [];
 var pos = new THREE.Vector3();
@@ -38,7 +36,6 @@ var impactPoint = new THREE.Vector3();
 var impactNormal = new THREE.Vector3();
 
 
-// init_GUI();
 init();
 animate();
 
