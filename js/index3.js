@@ -11,12 +11,6 @@ var ballMaterial = new THREE.MeshPhongMaterial( {
     color: new THREE.Color(_gui_controls.ballColor)
 } );
 
-gui_ball_color.onFinishChange(function(value) {
-    console.log("set color of ball to " + value);
-    ballMaterial.color.sexHex(new THREE.Color(value));
-    console.log(new THREE.Color(value));
-});
-
 
 
 // Physics variables
@@ -59,12 +53,12 @@ function init() {
 
 function initGraphics() {
     container = document.getElementById( 'container' );
-    container.innerHTML = "";
 
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xbfd1e5 );
     camera.position.set( -14, 8, 16 );
+    
     controls = new THREE.OrbitControls( camera);
     controls.target.set( 0, 2, 0 );
     controls.update();
@@ -72,9 +66,12 @@ function initGraphics() {
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.shadowMap.enabled = true;
+    
     textureLoader = new THREE.TextureLoader();
+    
     var ambientLight = new THREE.AmbientLight( 0x707070 );
     scene.add( ambientLight );
+    
     var light = new THREE.DirectionalLight( 0xffffff, 1 );
     light.position.set( -10, 18, 5 );
     light.castShadow = true;
@@ -88,8 +85,10 @@ function initGraphics() {
     light.shadow.mapSize.x = 1024;
     light.shadow.mapSize.y = 1024;
     scene.add( light );
+    
     container.innerHTML = "";
     container.appendChild( renderer.domElement );
+    
     stats = new Stats();
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.top = '0px';
@@ -107,7 +106,10 @@ function initPhysics() {
     physicsWorld.setGravity( new Ammo.btVector3( 0, - gravityConstant, 0 ) );
 }
 function createObject( mass, halfExtents, pos, quat, material ) {
-    var object = new THREE.Mesh( new THREE.BoxGeometry( halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2 ), material );
+    var object = new THREE.Mesh( 
+        new THREE.BoxGeometry(  halfExtents.x * 2, 
+                                halfExtents.y * 2, 
+                                halfExtents.z * 2 ), material );
     object.position.copy( pos );
     object.quaternion.copy( quat );
     convexBreaker.prepareBreakableObject( object, mass, new THREE.Vector3(), new THREE.Vector3(), true );
@@ -126,8 +128,9 @@ function createObjects() {
         ground.material.map = texture;
         ground.material.needsUpdate = true;
     } );
+
     // Tower 1
-    var towerMass = 1000;
+    var towerMass = _gui_controls.towerMass;
     var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
     pos.set( -8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
@@ -136,23 +139,26 @@ function createObjects() {
     pos.set( 8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF4A321 ) );
+    
     //Bridge
-    var bridgeMass = 100;
+    var bridgeMass = _gui_controls.bridgeMass;
     var bridgeHalfExtents = new THREE.Vector3( 7, 0.2, 1.5 );
     pos.set( 0, 10.2, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB38835 ) );
+    
     // Stones
-    var stoneMass = 120;
+    var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
-    var numStones = 8;
+    var numStones = 8; //_gui_controls.numStones;
     quat.set( 0, 0, 0, 1 );
     for ( var i = 0; i < numStones; i++ ) {
         pos.set( 0, 2, 15 * ( 0.5 - i / ( numStones + 1 ) ) );
         createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
     }
+
     // Mountain
-    var mountainMass = 860;
+    var mountainMass = _gui_controls.mountainMass;
     var mountainHalfExtents = new THREE.Vector3( 4, 5, 4 );
     pos.set( 5, mountainHalfExtents.y * 0.5, - 7 );
     quat.set( 0, 0, 0, 1 );
@@ -167,8 +173,9 @@ function createObjects() {
     mountain.quaternion.copy( quat );
     convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( mountain );
+    
     // Mesh Experimentation
-    var teapotMass = 800;
+    var teapotMass = _gui_controls.teapotMass;
     pos.set( 10, 0, 10 );
     quat.set( 0, 0, 0, 1 );
     teapotVertices = [];
