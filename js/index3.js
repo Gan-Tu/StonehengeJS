@@ -356,40 +356,6 @@ function createObjects() {
     _gui_particles.add( spawnerOptions, "timeScale", -1, 1 );
 }
 
-function createParticleSystemFromGeometry(geom) {
-    var psMat = new THREE.PointCloudMaterial();
-    psMat.map = THREE.ImageUtils.loadTexture("textures/ps_ball.png");
-    psMat.blending = THREE.AdditiveBlending;
-    psMat.transparent = true;
-    psMat.color = new THREE.Color(0, 1, 1);
-    psMat.opacity = 0.6;
-    var ps = new THREE.PointCloud(geom, psMat);
-    ps.sortParticles = true;
-    scene.add(ps);
-    for (var i = 0; i < model.vertices.length; i++) {
-        avgVertexNormals.push(new THREE.Vector3(0, 0, 0));
-        avgVertexCount.push(0);
-    }
-    // first add all the normals
-    model.faces.forEach(function (f) {
-        var vA = f.vertexNormals[0];
-        var vB = f.vertexNormals[1];
-        var vC = f.vertexNormals[2];
-        // update the count
-        avgVertexCount[f.a] += 1;
-        avgVertexCount[f.b] += 1;
-        avgVertexCount[f.c] += 1;
-        // add the vector
-        avgVertexNormals[f.a].add(vA);
-        avgVertexNormals[f.b].add(vB);
-        avgVertexNormals[f.c].add(vC);
-    });
-    // then calculate the average
-    for (var i = 0; i < avgVertexNormals.length; i++) {
-        avgVertexNormals[i].divideScalar(avgVertexCount[i]);
-    }
-}
-
 function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
     var object = new THREE.Mesh( new THREE.BoxGeometry( sx, sy, sz, 1, 1, 1 ), material );
     var shape = new Ammo.btBoxShape( new Ammo.btVector3( sx * 0.5, sy * 0.5, sz * 0.5 ) );
