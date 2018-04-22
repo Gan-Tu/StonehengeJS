@@ -84,6 +84,7 @@ var physicsWorld;
 var margin = 0.05;
 var convexBreaker = new THREE.ConvexObjectBreaker();
 
+
 // Rigid bodies include all movable objects
 var rigidBodies = [];
 var pos = new THREE.Vector3();
@@ -237,28 +238,74 @@ function createObjects() {
     createDebrisFromBreakableObject( mountain );
 
     // Mesh Experimentation
-    var teapotMass = _gui_controls.teapotMass;
-    pos.set( 10, 0, 10 );
-    quat.set( 0, 0, 0, 1 );
-    teapotVertices = [];
-    var scale = 0.2;
-    var threeGeo = new THREE.Geometry();
-    for (var i = 0; i < teapotPoints.length; i += 3) {
-        threeGeo.vertices.push( new THREE.Vector3( teapotPoints[i + 0] * scale, teapotPoints[i + 1] * scale, teapotPoints[i + 2] * scale) );
+    // var teapotMass = _gui_controls.teapotMass;
+    // pos.set( 10, 0, 10 );
+    // quat.set( 0, 0, 0, 1 );
+    // teapotVertices = [];
+    // var scale = 0.2;
+    // var threeGeo = new THREE.Geometry();
+    // for (var i = 0; i < teapotPoints.length; i += 3) {
+    //     threeGeo.vertices.push( new THREE.Vector3( teapotPoints[i + 0] * scale, teapotPoints[i + 1] * scale, teapotPoints[i + 2] * scale) );
+    // }
+    // for (var i = 0; i < teapotFaces.length; i += 3) {
+    //     var f1 = teapotFaces[i + 0], f2 = teapotFaces[i + 1], f3 = teapotFaces[i + 2];
+    //     var n0 = (teapotNormals[f1 + 0], teapotNormals[f2 + 0], teapotNormals[f3 + 0]) / 3.0;
+    //     var n1 = (teapotNormals[f1 + 1], teapotNormals[f2 + 1], teapotNormals[f3 + 1]) / 3.0;
+    //     var n2 = (teapotNormals[f1 + 2], teapotNormals[f2 + 2], teapotNormals[f3 + 2]) / 3.0;
+    //     var n = new THREE.Vector3(n0, n1, n2);
+    //     threeGeo.faces.push( new THREE.Face3( f1, f2, f3, n ) );
+    // }
+    // var teapot = new THREE.Mesh( threeGeo, createMaterial (0xFFB443 ));
+    // teapot.position.copy( pos );
+    // teapot.quaternion.copy( quat );
+    // convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
+    // createDebrisFromBreakableObject( teapot );
+}
+
+function explode(outwards) {
+    var dir = outwards === true ? 1 : -1;
+    var count = 0;
+    model.vertices.forEach(function (v) {
+        v.x += (avgVertexNormals[count].x * v.velocity * control.scale) * dir;
+        v.y += (avgVertexNormals[count].y * v.velocity * control.scale) * dir;
+        v.z += (avgVertexNormals[count].z * v.velocity * control.scale) * dir;
+        count++;
+    });
+    model.verticesNeedUpdate = true;
+}
+
+function createParticleSystemFromGeometry(geom) {
+    var psMat = new THREE.PointCloudMaterial();
+    psMat.map = THREE.ImageUtils.loadTexture("textures/ps_ball.png");
+    psMat.blending = THREE.AdditiveBlending;
+    psMat.transparent = true;
+    psMat.color = new THREE.Color(0, 1, 1);
+    psMat.opacity = 0.6;
+    var ps = new THREE.PointCloud(geom, psMat);
+    ps.sortParticles = true;
+    scene.add(ps);
+    for (var i = 0; i < model.vertices.length; i++) {
+        avgVertexNormals.push(new THREE.Vector3(0, 0, 0));
+        avgVertexCount.push(0);
     }
-    for (var i = 0; i < teapotFaces.length; i += 3) {
-        var f1 = teapotFaces[i + 0], f2 = teapotFaces[i + 1], f3 = teapotFaces[i + 2];
-        var n0 = (teapotNormals[f1 + 0], teapotNormals[f2 + 0], teapotNormals[f3 + 0]) / 3.0;
-        var n1 = (teapotNormals[f1 + 1], teapotNormals[f2 + 1], teapotNormals[f3 + 1]) / 3.0;
-        var n2 = (teapotNormals[f1 + 2], teapotNormals[f2 + 2], teapotNormals[f3 + 2]) / 3.0;
-        var n = new THREE.Vector3(n0, n1, n2);
-        threeGeo.faces.push( new THREE.Face3( f1, f2, f3, n ) );
+    // first add all the normals
+    model.faces.forEach(function (f) {
+        var vA = f.vertexNormals[0];
+        var vB = f.vertexNormals[1];
+        var vC = f.vertexNormals[2];
+        // update the count
+        avgVertexCount[f.a] += 1;
+        avgVertexCount[f.b] += 1;
+        avgVertexCount[f.c] += 1;
+        // add the vector
+        avgVertexNormals[f.a].add(vA);
+        avgVertexNormals[f.b].add(vB);
+        avgVertexNormals[f.c].add(vC);
+    });
+    // then calculate the average
+    for (var i = 0; i < avgVertexNormals.length; i++) {
+        avgVertexNormals[i].divideScalar(avgVertexCount[i]);
     }
-    var teapot = new THREE.Mesh( threeGeo, createMaterial (0xFFB443 ));
-    teapot.position.copy( pos );
-    teapot.quaternion.copy( quat );
-    convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
-    createDebrisFromBreakableObject( teapot );
 }
 
 function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {
@@ -468,5 +515,10 @@ function render() {
     var deltaTime = clock.getDelta();
     updatePhysics( deltaTime );
     renderer.render( scene, camera );
+    if (doExplode) {
+        explode(true);
+    } else {
+        explode(false);
+    }
     time += deltaTime;
 }
