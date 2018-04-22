@@ -120,3 +120,27 @@ _gui_controls.addStone = function add_stones() {
 _guid_add.add(_gui_controls, 'addStone').name("add some stones");
 
 
+_gui_controls.ballBrigade = function createBallBrigade () {
+    for (var i = 0; i < _gui_controls.numBalls; i++ ) {
+        var ball = new THREE.Mesh( new THREE.SphereGeometry( _gui_controls.ballRadius, 14, 10 ), ballMaterial );
+        textureLoader.load( "textures/marble.jpg", function( texture ) {
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set( 40, 40 );
+            ball.material.map = texture;
+            ball.material.needsUpdate = true;
+        } );
+        ball.castShadow = true;
+        ball.receiveShadow = true;
+        var ballShape = new Ammo.btSphereShape( _gui_controls.ballRadius );
+        ballShape.setMargin( margin );
+        pos.set( (Math.random() - 0.5) * 100, 20, (Math.random() - 0.5) * 100);
+        quat.set( 0, 0, 0, 1 );
+        var ballBody = createRigidBody( ball, ballShape, _gui_controls.ballMass, pos, quat );
+        pos.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 )
+        pos.multiplyScalar( 24 );
+        ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
+    }
+}
+_guid_add.add(_gui_controls, 'ballBrigade');
+

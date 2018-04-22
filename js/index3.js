@@ -207,8 +207,8 @@ function place_bunny() {
     jsonLoader.load(
         'models/bunny.json',
         function ( geometry, materials ) {
-            var bunny_mass = 300;
-            pos.set(5, -1.5, 15);
+            var bunny_mass = _gui_controls.bunnyMass;
+            pos.set(0, -1.5, 15);
             quat.set( 0, 0, 0, 1 );
 
             var bunny_scale = 30.;
@@ -238,8 +238,8 @@ function place_tree() {
     jsonLoader.load(
         'models/tree.json',
         function ( geometry, materials ) {
-            var tree_mass = 300;
-            pos.set(5, -1.5, 25);
+            var tree_mass = _gui_controls.treeMass;
+            pos.set(0, -1.5, 25);
             quat.set( 0, 0, 0, 1 );
 
             var tree_scale = 10.;
@@ -271,3 +271,5 @@ function place_particles() {
     } );
     scene.add( particleSystem );
 }
+
+
