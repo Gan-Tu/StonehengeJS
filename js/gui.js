@@ -86,6 +86,3 @@ gui.domElement.addEventListener('mousedown', _stopPropagation);
 function _stopPropagation(evt) {
     evt.stopPropagation();
 }
-
-
-

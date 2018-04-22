@@ -271,5 +271,3 @@ function place_particles() {
     } );
     scene.add( particleSystem );
 }
-
-
