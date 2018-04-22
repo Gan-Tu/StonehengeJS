@@ -63,6 +63,9 @@ THREE.ConvexObjectBreaker.prototype = {
 
 		// Create vertices mark
 		var vertices = object.geometry.vertices;
+		if (vertices == null) {
+			vertices = object.geometry.teapotVertices;
+		}
 		for ( var i = 0, il = vertices.length; i < il; i++ ) {
 			vertices[ i ].mark = 0;
 		}
