@@ -1,68 +1,21 @@
 // GUIs
 
-var GUI_Control = function() {
-    this.ballMass = 35;
-    this.ballRadius = 0.4;
-    this.ballColor = '#202020';
+_gui_controls.addStone = function add_stones() {
+    var stoneMass = _gui_controls.stoneMass;
+    var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
+    quat.set( 0, Math.random(), 0, 1 );
+    var num = this.numStonesAdd;
 
-    this.towerMass = 1000;
-    this.bridgeMass = 250;
-    this.stoneMass = 120;
-    this.numStones = 5;
-    this.mountainMass = 860;
-    this.teapotMass = 300;
-
-    this.numStonesAdd = 2;
-
-    this.addStone = function add_stones() {
-        var stoneMass = _gui_controls.stoneMass;
-        var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
-        quat.set( 0, Math.random(), 0, 1 );
-        var num = this.numStonesAdd;
-
-        for ( var i = 0; i < num; i++ ) {
-            pos.set( Math.random() * 10 - 5,
-                    Math.random() * 10 - 5,
-                    15 * ( Math.random() - i / ( num + 1 ) ) );
-            createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
-        }
-    };
-}
+    for ( var i = 0; i < num; i++ ) {
+        pos.set( Math.random() * 10 - 5,
+                Math.random() * 10 - 5,
+                15 * ( Math.random() - i / ( num + 1 ) ) );
+        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
+    }
+};
+_guid_add.add(_gui_controls, 'addStone').name("add some stones");
 
 
-var _gui_controls = new GUI_Control();
-var gui = new dat.GUI();
-
-
-_guid_ball = gui.addFolder("Ball Parameters")
-
-var gui_ball_color = _guid_ball.add(_gui_controls, 'ballColor').name("Ball Color");
-_guid_ball.add(_gui_controls, 'ballMass', 5, 50, 1).name("Ball Mass");
-_guid_ball.add(_gui_controls, 'ballRadius', 0.05, 2, 0.01).name("Ball Radius");
-_guid_ball.open();
-
-
-_guid_scene = gui.addFolder("Scene Objects")
-_guid_scene.add(_gui_controls, 'towerMass', 100, 2000, 50).name("Tower Mass");
-_guid_scene.add(_gui_controls, 'bridgeMass', 10, 500, 10).name("Bridge Mass");
-_guid_scene.add(_gui_controls, 'stoneMass', 10, 500, 10).name("Stone Mass");
-_guid_scene.add(_gui_controls, 'mountainMass', 100, 2000, 10).name("Mountain Mass");
-_guid_scene.add(_gui_controls, 'teapotMass', 100, 2000, 10).name("Teapot Mass");
-_guid_scene.open();
-
-_guid_add = gui.addFolder("Add Things")
-_guid_add.add(_gui_controls, 'numStonesAdd', 1, 5, 1).name("Number of Stones to Add");
-_guid_add.add(_gui_controls, 'addStone');
-_guid_add.open();
-
-// Disable event listeners on menu
-gui.domElement.addEventListener('mousedown', _stopPropagation);
-
-function _stopPropagation(evt) {
-    evt.stopPropagation();
-}
-
-// PARTICLES
 var container, stats;
 var camera, controls, scene, renderer;
 var textureLoader;
@@ -70,7 +23,6 @@ var clock = new THREE.Clock();
 var mouseCoords = new THREE.Vector2();
 var raycaster = new THREE.Raycaster();
 var ballMaterial = new THREE.MeshPhongMaterial();
-
 
 
 // Physics variables
@@ -97,12 +49,6 @@ for ( var i = 0; i < 500; i++ ) {
 var numObjectsToRemove = 0;
 var impactPoint = new THREE.Vector3();
 var impactNormal = new THREE.Vector3();
-
-// Particle Cow
-var avgVertexNormals = [];
-var avgVertexCount = [];
-var doExplode = true;
-var sphere;
 
 
 init();

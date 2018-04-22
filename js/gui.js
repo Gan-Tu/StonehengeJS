@@ -1,14 +1,16 @@
-
 var GUI_Control = function() {
     this.ballMass = 35;
     this.ballRadius = 0.4;
     this.ballColor = '#202020';
-    
+
     this.towerMass = 1000;
     this.bridgeMass = 250;
     this.stoneMass = 120;
+    this.numStones = 5;
     this.mountainMass = 860;
-    this.teapotMass = 860;
+    this.teapotMass = 300;
+
+    this.numStonesAdd = 2;
 }
 
 
@@ -32,6 +34,9 @@ _guid_scene.add(_gui_controls, 'mountainMass', 100, 2000, 10).name("Mountain Mas
 _guid_scene.add(_gui_controls, 'teapotMass', 100, 2000, 10).name("Teapot Mass");
 _guid_scene.open();
 
+_guid_add = gui.addFolder("Add Balls")
+_guid_add.add(_gui_controls, 'numStonesAdd', 1, 5, 1).name("Number of Stones");
+_guid_add.open();
 
 // Disable event listeners on menu
 gui.domElement.addEventListener('mousedown', _stopPropagation);
