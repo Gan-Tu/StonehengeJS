@@ -1,129 +1,3 @@
-/************************************* VARIABLES *************************************/
-
-// Particle Time Ticks
-var tick = 0;
-
-// Three.js Rendering Logics
-var container, stats;
-var camera, controls, scene, renderer;
-var textureLoader = new THREE.TextureLoader();;
-var jsonLoader = new THREE.JSONLoader()
-var clock = new THREE.Clock();
-var mouseCoords = new THREE.Vector2();
-var raycaster = new THREE.Raycaster();
-
-// Predefined Materials
-var ballMaterial = new THREE.MeshPhongMaterial();
-
-// Physics variables
-var gravityConstant = 7.8;
-var collisionConfiguration;
-var dispatcher;
-var broadphase;
-var solver;
-var physicsWorld;
-var margin = 0.05;
-var convexBreaker = new THREE.ConvexObjectBreaker();
-
-
-// Rigid bodies include all movable objects
-var rigidBodies = [];
-var pos = new THREE.Vector3();
-var quat = new THREE.Quaternion();
-var transformAux1 = new Ammo.btTransform();
-var tempBtVec3_1 = new Ammo.btVector3( 0, 0, 0 );
-var time = 0;
-var objectsToRemove = [];
-for ( var i = 0; i < 500; i++ ) {
-    objectsToRemove[ i ] = null;
-}
-var numObjectsToRemove = 0;
-var impactPoint = new THREE.Vector3();
-var impactNormal = new THREE.Vector3();
-
-/************************************* INITIALIZATIONS *************************************/
-
-initGraphics();
-initPhysics();
-createObjects();
-
-
-// Initialize Graphics
-function initGraphics() {
-
-    // Initialize Graphics Canvas Container
-    container.innerHTML = "";
-    container = document.getElementById( 'container' );
-
-    // Initialize Camera Settings
-    camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
-    camera.position.set( -14, 8, 16 );
-
-    // Initialize Scene
-    scene = new THREE.Scene();
-    scene.background = textureLoader.load( 'textures/dark-room.jpg' );
-
-    // Initialize Orbit Controls
-    controls = new THREE.OrbitControls( camera);
-    controls.target.set( 0, 2, 0 );
-    controls.update();
-
-    // Initialize Web rendering
-    renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.shadowMap.enabled = true;
-    container.innerHTML = "";
-    container.appendChild( renderer.domElement );
-
-    // Initialize Ambient Lights
-    var ambientLight = new THREE.AmbientLight( 0x707070 );
-    scene.add( ambientLight );
-
-    // Initialize Directional Lights
-    var light = new THREE.DirectionalLight( 0xffffff, 1 );
-    light.position.set( -10, 18, 5 );
-    light.castShadow = true;
-    var d = 14;
-    light.shadow.camera.left = -d;
-    light.shadow.camera.right = d;
-    light.shadow.camera.top = d;
-    light.shadow.camera.bottom = -d;
-    light.shadow.camera.near = 2;
-    light.shadow.camera.far = 50;
-    light.shadow.mapSize.x = 1024;
-    light.shadow.mapSize.y = 1024;
-    scene.add( light );
-
-    // Initialize Stats
-    stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.top = '0px';
-    container.appendChild( stats.domElement );
-}
-
-function initPhysics() {
-    // Physics configuration
-    collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-    dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
-    broadphase = new Ammo.btDbvtBroadphase();
-    solver = new Ammo.btSequentialImpulseConstraintSolver();
-    physicsWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
-    physicsWorld.setGravity( new Ammo.btVector3( 0, - gravityConstant, 0 ) );
-}
-
-/************************************* OBJECTS CREATION *************************************/
-
-function createObjects() {
-    place_ground();
-    place_main_scene();
-    place_teapot();
-    place_bunny();
-    place_tree();
-    place_particles();
-}
-
-
 
 function place_ground() {
     pos.set( 0, - 0.5, 0 );
@@ -207,8 +81,8 @@ function place_bunny() {
     jsonLoader.load(
         'models/bunny.json',
         function ( geometry, materials ) {
-            var bunny_mass = _gui_controls.bunnyMass;
-            pos.set(0, -1.5, 15);
+            var bunny_mass = 300;
+            pos.set(5, -1.5, 15);
             quat.set( 0, 0, 0, 1 );
 
             var bunny_scale = 30.;
@@ -238,8 +112,8 @@ function place_tree() {
     jsonLoader.load(
         'models/tree.json',
         function ( geometry, materials ) {
-            var tree_mass = _gui_controls.treeMass;
-            pos.set(0, -1.5, 25);
+            var tree_mass = 300;
+            pos.set(5, -1.5, 25);
             quat.set( 0, 0, 0, 1 );
 
             var tree_scale = 10.;
@@ -271,5 +145,3 @@ function place_particles() {
     } );
     scene.add( particleSystem );
 }
-
-
