@@ -53,7 +53,7 @@ init();
 function init() {
     initGraphics();
     createObjects();
-    place_particle_geo();
+    place_teapot_particle_mesh();
 }
 
 // Initialize Graphics
@@ -302,7 +302,7 @@ function place_particles() {
 }
 
 
-function place_particle_geo() {
+function place_teapot_particle_mesh() {
     var particles = 50000;
     var geometry = new THREE.BufferGeometry();
     var positions = [];
