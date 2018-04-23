@@ -34,6 +34,20 @@ function render() {
     renderer.render( scene, camera );
     // Increase Timer
     time += deltaTime;
+
+    // Experiment
+    var time = Date.now() * 0.001;
+    points.rotation.y = time * 0.5;
+
+    if (_gui_controls.collapse) {
+
+        for ( var i = 0; i < points.geometry.attributes.position.count; i++) {
+            points.geometry.attributes.position.setY(i,
+                points.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
+        }
+
+        points.geometry.attributes.position.needsUpdate = true;
+    }
 }
 
 

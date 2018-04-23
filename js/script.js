@@ -1,5 +1,10 @@
 /************************************* VARIABLES *************************************/
 
+// Experiment
+
+var points;
+
+
 // Particle
 var tick = 0;
 var particleSystem;
@@ -48,7 +53,7 @@ init();
 function init() {
     initGraphics();
     createObjects();
-    init_particle();
+    place_particle_geo();
 }
 
 // Initialize Graphics
@@ -122,7 +127,6 @@ function place_rocks() {
     jsonLoader.load(
         'models/stone2.json',
         function (geometry, material) {
-            console.log("stone " + geometry);
             var stone_pos = new THREE.Vector3(stone2HalfExtents.x * 2,
                                              stone2HalfExtents.y * 2, 
                                              stone2HalfExtents.z * 2);
@@ -171,7 +175,6 @@ function place_main_scene() {
     var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
     pos.set( -8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
-    console.log("hi");
     createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF0A024 ) );
 
     // Tower 2
@@ -277,7 +280,6 @@ function place_tree() {
             textureLoader.load( "textures/terrain/grasslight-big.jpg",
                 function( texture )
             {
-                console.log(texture);
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set( 40, 40 );
@@ -297,5 +299,52 @@ function place_particles() {
         maxParticles: 250000
     });
     scene.add( particleSystem );
+}
+
+
+function place_particle_geo() {
+    var particles = 50000;
+    var geometry = new THREE.BufferGeometry();
+    var positions = [];
+    var colors = [];
+    var color = new THREE.Color();
+    var n = 20, n2 = n / 2; // particles spread in the cube
+
+    var threeGeo = new THREE.TeapotBufferGeometry(2, 5, true, true, true, false, true)
+
+    for ( var i = 0; i < threeGeo.attributes.position.array.length; i += 3 ) {
+        // positions
+        
+        var x = 10 + threeGeo.attributes.position.array[i];//Math.random() * n - n2 + 40;
+        var y = 15 + threeGeo.attributes.position.array[i+1];//Math.random() * n - n2 + 40;
+        var z = threeGeo.attributes.position.array[i+2];//Math.random() * n - n2 + 40;
+
+
+        positions.push( x, y, z );
+
+        // colors
+        var vx = ( x / n ) + 1.5;
+        var vy = ( y / n ) + 1.5;
+        var vz = ( z / n ) + 1.5;
+        color.setRGB( vx, vy, vz );
+        colors.push( color.r, color.g, color.b );
+    }
+    geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+    geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+    // geometry.computeBoundingSphere();
+    //
+    var material = new THREE.PointsMaterial( { 
+            size: 0.5, 
+            map: textureLoader.load(
+                "textures/ps_ball.png"
+              ),
+            blending: THREE.AdditiveBlending,
+            transparent: true
+        } );
+
+    points = new THREE.Points( geometry, material );
+
+    points.name = "experiment";
+    scene.add( points );
 }
 

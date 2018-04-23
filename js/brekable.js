@@ -132,7 +132,7 @@ _gui_controls.addStone = function add_stones() {
         createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
     }
 };
-_guid_add.add(_gui_controls, 'addStone').name("add stones");
+_gui_add.add(_gui_controls, 'addStone').name("add stones");
 
 
 _gui_controls.ballBrigade = function createBallBrigade () {
@@ -157,4 +157,4 @@ _gui_controls.ballBrigade = function createBallBrigade () {
         ballBody.setLinearVelocity( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
     }
 }
-_guid_add.add(_gui_controls, 'ballBrigade').name("add balls");
+_gui_add.add(_gui_controls, 'ballBrigade').name("add balls");
