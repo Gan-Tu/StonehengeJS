@@ -126,7 +126,7 @@ function createObjects() {
     // place tree
     place_mesh_with_texture(    mesh_path = 'models/tree.json', 
                                 texture_path = 'textures/terrain/grasslight-big.jpg', 
-                                pos = new THREE.Vector3(10, -1.5, 25), 
+                                pos = new THREE.Vector3(10, -2, 10), 
                                 quat = new THREE.Vector4( 0, 0, 0, 1 ), 
                                 mesh_scale = 10., 
                                 mass =_gui_controls.treeMass
@@ -138,11 +138,11 @@ function createObjects() {
                                 pos = new THREE.Vector3(-20, 0, 20), 
                                 quat = quat, 
                                 mesh_scale = 0.01, 
-                                mass = 200
+                                mass = 400
                             );
 
     place_particles();
-    place_teapot_particle_mesh();
+    //place_teapot_particle_mesh();
 }
 
 function place_ground() {
@@ -214,6 +214,7 @@ function place_teapot() {
     var threeGeo = new THREE.Geometry().fromBufferGeometry(
                 new THREE.TeapotBufferGeometry(2, 5, true, true, true, false, true));
     var teapot = new THREE.Mesh( threeGeo, createMaterial (0xA2A09F));
+    teapot.name = "teapot";
     teapot.position.copy( teapot_pos );
     teapot.quaternion.copy( teapot_quat );
     convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
@@ -243,8 +244,8 @@ function place_teapot_particle_mesh() {
     for ( var i = 0; i < threeGeo.attributes.position.array.length; i += 3 ) {
         // positions
         
-        var x = 10 + threeGeo.attributes.position.array[i];//Math.random() * n - n2 + 40;
-        var y = 15 + threeGeo.attributes.position.array[i+1];//Math.random() * n - n2 + 40;
+        var x = threeGeo.attributes.position.array[i];//Math.random() * n - n2 + 40;
+        var y = threeGeo.attributes.position.array[i+1];//Math.random() * n - n2 + 40;
         var z = threeGeo.attributes.position.array[i+2];//Math.random() * n - n2 + 40;
 
 
@@ -269,7 +270,7 @@ function place_teapot_particle_mesh() {
         } );
 
     points = new THREE.Points( geometry, material );
-
+    points.position.copy( new THREE.Vector3(0, 12.5, 0) );
     points.name = "experiment";
     scene.add( points );
 }

@@ -48,7 +48,7 @@ _gui_add.add(_gui_controls, 'numBalls', 1, 100, 1).name("# Balls");
 _gui_add.open();
 
 _gui_p = gui.addFolder("Particle Objects");
-_gui_p.add(_gui_controls, 'collapse').name("Collapse Mesh Teapot");
+_gui_p.add(_gui_controls, 'collapse').name("Collapse Teapot");
 _gui_p.open();
 
 var particle_options = {

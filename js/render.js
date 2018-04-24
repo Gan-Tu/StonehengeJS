@@ -37,16 +37,20 @@ function render() {
 
     // Experiment
     var time = Date.now() * 0.001;
-    points.rotation.y = time * 0.5;
+    // points.rotation.y = time * 0.5;
 
     if (_gui_controls.collapse) {
-
-        for ( var i = 0; i < points.geometry.attributes.position.count; i++) {
-            points.geometry.attributes.position.setY(i,
-                points.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
+        var teapot = scene.getObjectByName("teapot");
+        if (teapot) {
+            scene.remove(teapot);
+            place_teapot_particle_mesh();
+        } else {
+            for ( var i = 0; i < points.geometry.attributes.position.count; i++) {
+                points.geometry.attributes.position.setY(i,
+                    points.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
+            }
+            points.geometry.attributes.position.needsUpdate = true;
         }
-
-        points.geometry.attributes.position.needsUpdate = true;
     }
 }
 
