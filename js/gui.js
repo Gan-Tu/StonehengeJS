@@ -49,6 +49,7 @@ _gui_add.open();
 
 _gui_p = gui.addFolder("Particle Objects");
 _gui_p.add(_gui_controls, 'collapse').name("Collapse Mesh Teapot");
+_gui_p.open();
 
 var particle_options = {
     position: new THREE.Vector3(),

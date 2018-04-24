@@ -109,9 +109,9 @@ function updatePhysics( deltaTime ) {
             continue;
         }
         // Subdivision
-        var fractureImpulse = 250;
+        var fractureImpulse = 220;
         if ( breakable0 && !collided0 && maxImpulse > fractureImpulse ) {
-            var debris = convexBreaker.subdivideByImpact( threeObject0, impactPoint, impactNormal , 1, 2, 1.5 );
+            var debris = convexBreaker.subdivideByImpact( threeObject0, impactPoint, impactNormal , 1, 4, 1.5 );
             var numObjects = debris.length;
             for ( var j = 0; j < numObjects; j++ ) {
                 createDebrisFromBreakableObject( debris[ j ] );
@@ -120,7 +120,7 @@ function updatePhysics( deltaTime ) {
             userData0.collided = true;
         }
         if ( breakable1 && !collided1 && maxImpulse > fractureImpulse ) {
-            var debris = convexBreaker.subdivideByImpact( threeObject1, impactPoint, impactNormal , 1, 2, 1.5 );
+            var debris = convexBreaker.subdivideByImpact( threeObject1, impactPoint, impactNormal , 1, 4, 1.5 );
             var numObjects = debris.length;
             for ( var j = 0; j < numObjects; j++ ) {
                 createDebrisFromBreakableObject( debris[ j ] );

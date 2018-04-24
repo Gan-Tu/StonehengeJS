@@ -53,7 +53,6 @@ init();
 function init() {
     initGraphics();
     createObjects();
-    place_teapot_particle_mesh();
 }
 
 // Initialize Graphics
@@ -116,43 +115,35 @@ function createObjects() {
     place_ground();
     place_main_scene();
     place_teapot();
-    place_bunny();
-    place_tree();
+    // place bunny
+    place_mesh_with_texture(    mesh_path = 'models/bunny.json', 
+                                texture_path = 'textures/metal.jpg', 
+                                pos = new THREE.Vector3(0, -1.5, 15), 
+                                quat = new THREE.Vector4( 0, 0, 0, 1 ), 
+                                mesh_scale = 30, 
+                                mass = _gui_controls.bunnyMass
+                            );
+    // place tree
+    place_mesh_with_texture(    mesh_path = 'models/tree.json', 
+                                texture_path = 'textures/terrain/grasslight-big.jpg', 
+                                pos = new THREE.Vector3(10, -1.5, 25), 
+                                quat = new THREE.Vector4( 0, 0, 0, 1 ), 
+                                mesh_scale = 10., 
+                                mass =_gui_controls.treeMass
+                            );
+    
+    // place rock stone
+    place_mesh_with_texture(    mesh_path = 'models/stone2.json', 
+                                texture_path = 'textures/stone.jpg', 
+                                pos = new THREE.Vector3(-20, 0, 20), 
+                                quat = quat, 
+                                mesh_scale = 0.01, 
+                                mass = 200
+                            );
+
     place_particles();
-    place_rocks();
+    place_teapot_particle_mesh();
 }
-
-function place_rocks() {
-    var stone2HalfExtents = new THREE.Vector3( -10, 0, 10 );
-    jsonLoader.load(
-        'models/stone2.json',
-        function (geometry, material) {
-            var stone_pos = new THREE.Vector3(stone2HalfExtents.x * 2,
-                                             stone2HalfExtents.y * 2, 
-                                             stone2HalfExtents.z * 2);
-            var stone_scale = 0.01;
-
-            geometry.scale(stone_scale, stone_scale, stone_scale);
-
-            var stone;
-
-            textureLoader.load( "textures/stone.jpg",
-                function( texture )
-            {
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set( 40, 40 );
-                stone = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { map: texture } ) );
-                stone.position.copy( stone_pos );
-                stone.quaternion.copy( quat );
-
-                convexBreaker.prepareBreakableObject( stone, 200, new THREE.Vector3(), new THREE.Vector3(), true );
-                createDebrisFromBreakableObject( stone );
-            } );
-        }
-    );
-}
-
 
 function place_ground() {
     pos.set( 0, - 0.5, 0 );
@@ -160,9 +151,6 @@ function place_ground() {
     var ground = createCylinderWithPhysics( 40, 1, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
     ground.receiveShadow = true;
     textureLoader.load( "textures/water/Water_1_M_Normal.jpg", function( texture ) {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 40, 40 );
         ground.material.map = texture;
         ground.material.needsUpdate = true;
     } );
@@ -233,66 +221,6 @@ function place_teapot() {
 
 }
 
-function place_bunny() {
-    jsonLoader.load(
-        'models/bunny.json',
-        function ( geometry, materials ) {
-            var bunny_mass = _gui_controls.bunnyMass;
-            var bunny_pos = new THREE.Vector3(0, -1.5, 15);
-            var bunny_quat = new THREE.Vector4( 0, 0, 0, 1 );
-
-            var bunny_scale = 30.;
-            geometry.scale(bunny_scale,bunny_scale,bunny_scale);
-
-            var bunny;
-
-            textureLoader.load( "textures/metal.jpg",
-                function( texture )
-            {
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set( 40, 40 );
-                bunny = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
-                bunny.material.map = texture;
-                bunny.position.copy( bunny_pos );
-                bunny.quaternion.copy( bunny_quat );
-                convexBreaker.prepareBreakableObject( bunny, bunny_mass, new THREE.Vector3(), new THREE.Vector3(), true );
-                createDebrisFromBreakableObject( bunny );
-            } );
-            createDebrisFromBreakableObject( bunny );
-        }
-    );
-}
-
-function place_tree() {
-    jsonLoader.load(
-        'models/tree.json',
-        function ( geometry, materials ) {
-            var tree_mass = _gui_controls.treeMass;
-            var tree_pos = new THREE.Vector3(10, -1.5, 25);
-            var tree_quat = new THREE.Vector4( 0, 0, 0, 1 );
-
-            var tree_scale = 10.;
-            geometry.scale(tree_scale,tree_scale,tree_scale);
-
-            var tree;
-
-            textureLoader.load( "textures/terrain/grasslight-big.jpg",
-                function( texture )
-            {
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set( 40, 40 );
-                tree = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
-                tree.material.map = texture;
-                tree.position.copy( tree_pos );
-                tree.quaternion.copy( tree_quat );
-                convexBreaker.prepareBreakableObject( tree, tree_mass, new THREE.Vector3(), new THREE.Vector3(), true );
-                createDebrisFromBreakableObject( tree );
-            } );
-        }
-    );
-}
 
 function place_particles() {
     particleSystem =  new THREE.GPUParticleSystem( {
@@ -331,8 +259,6 @@ function place_teapot_particle_mesh() {
     }
     geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
     geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-    // geometry.computeBoundingSphere();
-    //
     var material = new THREE.PointsMaterial( { 
             size: 0.5, 
             map: textureLoader.load(
@@ -348,3 +274,24 @@ function place_teapot_particle_mesh() {
     scene.add( points );
 }
 
+
+function place_mesh_with_texture(mesh_path, texture_path, pos, quat, 
+                                mesh_scale, mass) {
+    jsonLoader.load(
+        mesh_path,
+        function (geometry, material) {
+            geometry.scale(mesh_scale, mesh_scale, mesh_scale);
+            textureLoader.load( texture_path,
+                function( texture )
+            {
+                var mesh_obj;
+                var mesh_material = new THREE.MeshPhongMaterial( { map: texture });
+                mesh_obj = new THREE.Mesh( geometry, mesh_material );
+                mesh_obj.position.copy( pos );
+                mesh_obj.quaternion.copy( quat );
+                convexBreaker.prepareBreakableObject( mesh_obj, mass, new THREE.Vector3(), new THREE.Vector3(), true );
+                createDebrisFromBreakableObject( mesh_obj );
+            } );
+        }
+    );
+}
