@@ -139,9 +139,6 @@ _gui_controls.ballBrigade = function createBallBrigade () {
     for (var i = 0; i < _gui_controls.numBalls; i++ ) {
         var ball = new THREE.Mesh( new THREE.SphereGeometry( _gui_controls.ballRadius, 14, 10 ), ballMaterial );
         textureLoader.load( "textures/marble.jpg", function( texture ) {
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set( 40, 40 );
             ball.material.map = texture;
             ball.material.needsUpdate = true;
         } );
