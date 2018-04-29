@@ -39,15 +39,25 @@ function render() {
     // Collapse to Particles
     var time = Date.now() * 0.001;
 
-    if (move_points) {
+
+    // Explosion
+    if (points) {
         points.forEach(function movePoints(p) {
             for ( var i = 0; i < p.geometry.attributes.position.count; i++) {
-                p.geometry.attributes.position.setY(i,
-                    p.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5) * 0.5);
+
+                var xdir = _gui_controls.explosion_dir[i * 3 + 0];
+                var ydir = _gui_controls.explosion_dir[i * 3 + 1];
+                var zdir = _gui_controls.explosion_dir[i * 3 + 2];
+
+                var x = p.geometry.attributes.position.getX(i);
+                var y = p.geometry.attributes.position.getY(i);
+                var z = p.geometry.attributes.position.getZ(i);
+
+                p.geometry.attributes.position.setXYZ(i, x + xdir, y + ydir, z + zdir);
             }
             p.geometry.attributes.position.needsUpdate = true;
         });
-    } 
+    }
 
     // Render Again
     renderer.render( scene, camera );

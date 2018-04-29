@@ -21,7 +21,9 @@ var GUI_Control = function() {
 
     this.chosen_object = "teapot";
 
-    this.collapse_by_name = function (name) {
+    this.explosion_dir = [];
+
+    this.explode_by_name = function (name) {
         var collapsed_object = scene.getObjectByName(name);
         if (collapsed_object) {
             scene.remove(collapsed_object);
@@ -36,19 +38,29 @@ var GUI_Control = function() {
             collapsed_object.geometry.dispose();
             collapsed_object.material.dispose();
 
-            move_points = true;
+            points.forEach(function movePoints(p) {
+                for ( var i = 0; i < p.geometry.attributes.position.count; i++) {
+
+                    var explosionSpeed = 2;
+                    var xdir = Math.random() * explosionSpeed - explosionSpeed/2;
+                    var ydir = Math.random() * explosionSpeed - explosionSpeed/2;
+                    var zdir = Math.random() * explosionSpeed - explosionSpeed/2;
+
+                    _gui_controls.explosion_dir.push(xdir, ydir, zdir);
+                }
+            });
         }
     };
 
     this.object_counts = {};
 
-    this.collapse = function () {
+    this.explode = function () {
         if (this.chosen_object in this.object_counts) {
             for ( var i = 0; i <= this.object_counts[this.chosen_object]; i++ ) {
-                this.collapse_by_name(this.chosen_object + i);
+                this.explode_by_name(this.chosen_object + i);
             }
         } else {
-            this.collapse_by_name(this.chosen_object);
+            this.explode_by_name(this.chosen_object);
         }
         delete this.object_counts[this.chosen_object];
     };

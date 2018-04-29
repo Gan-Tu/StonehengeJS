@@ -132,10 +132,10 @@ function init() {
 
 
     _gui_p = gui.addFolder("Particle Objects");
-    _gui_p.add(_gui_controls, 'chosen_object',
-                 Object.keys(collapsable_object_creation_fn)).name("Object Chosen:");
 
-    _gui_p.add(_gui_controls, 'collapse').name("Explode Object!");
+    _gui_p.add(_gui_controls, 'chosen_object', Object.keys(collapsable_object_creation_fn)).name("Object Chosen:");
+
+    _gui_p.add(_gui_controls, 'explode').name("Explode Object!");
 
 
     _gui_controls.add_object_by_name = function() {
@@ -399,9 +399,7 @@ function place_teapot() {
     teapot.quaternion.copy( teapot_quat );
     convexBreaker.prepareBreakableObject( teapot, teapotMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( teapot );
-
 }
-
 
 function place_particles() {
     particleSystem =  new THREE.GPUParticleSystem( {
@@ -439,7 +437,7 @@ function place_mesh_as_particles(mesh) {
     }
 
     // Increase the number of particles
-    while (positions.length < 400) {
+    while (positions.length < 300) {
         var i = Math.floor(Math.random() * positions.length / 3);
         positions.push(
             positions[i] + Math.random() * 3 - 1.5,
@@ -467,8 +465,8 @@ function place_mesh_as_particles(mesh) {
 }
 
 
-function place_mesh_with_texture(mesh_path, texture_path, pos, quat,
-                                 mesh_scale, mass, name) {
+function place_mesh_with_texture(mesh_path, texture_path, pos, 
+                                    quat,  mesh_scale, mass, name) {
     jsonLoader.load(
         mesh_path,
         function (geometry, material) {
@@ -488,3 +486,5 @@ function place_mesh_with_texture(mesh_path, texture_path, pos, quat,
         }
     );
 }
+
+
