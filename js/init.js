@@ -50,7 +50,7 @@ var impactNormal = new THREE.Vector3();
 var collapsable_object_creation_fn = {
     "outer_ring" : place_outer_ring,
     "outer_ceiling" : place_outer_ceiling,
-    "inter_ring" : place_inter_ring,
+    "inner_ring" : place_inner_ring,
     "centerpiece" : function() {
           place_centerpiece(period=0, radius=10);
           place_centerpiece(period=1.25, radius=9);
@@ -69,7 +69,7 @@ var collapsable_object_creation_fn = {
     // "tower1" : place_tower1,
     // "tower2" : place_tower2,
     // "bridge": place_bridge,
-    // "stones": place_initial_stones,
+    "stones": place_initial_stones,
     // "mountain": place_mountain,
     "teapot": function() {
         place_teapot(name="teapot")
@@ -244,7 +244,7 @@ function initSound() {
 
 function place_outer_ring() {
     var quat = new THREE.Quaternion();
-    var stoneMass = _gui_controls.stoneMass;
+    var stoneMass = _gui_controls.outerRingMass;
     var stoneHalfExtents = new THREE.Vector3( 0.75, 4, 1.25 );
     var radius = 20.0;
     for (var i = 0; i < 30; i++) {
@@ -258,7 +258,7 @@ function place_outer_ring() {
 
 function place_outer_ceiling() {
     var quat = new THREE.Quaternion();
-  var stoneMass = _gui_controls.stoneMass;
+  var stoneMass = _gui_controls.outerCeilingMass;
   var stoneHalfExtents = new THREE.Vector3( 0.75, 0.5, 1.95 );
   var radius = 20.0;
   var offset = Math.PI / 30.0
@@ -271,9 +271,9 @@ function place_outer_ceiling() {
   }
 }
 
-function place_inter_ring() {
+function place_inner_ring() {
     var quat = new THREE.Quaternion();
-    var stoneMass = _gui_controls.stoneMass;
+    var stoneMass = _gui_controls.innerRingMass;
     var stoneHalfExtents = new THREE.Vector3( 0.15, 2, 0.35 );
     var radius = 15.0;
     for (var i = 0; i < 60; i++) {
@@ -281,14 +281,14 @@ function place_inter_ring() {
         pos.set( radius * Math.cos(period), 0.0,  radius * Math.sin(period));
         quat.set( 0, 0, 0, 1 );
         quat.setFromAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 2.0 * (60.0 - i) * Math.PI / 60.0);
-        createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "inter_ring");
+        createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "inner_ring");
     }
 }
 
 function place_centerpiece(period, radius) {
     var quat = new THREE.Quaternion();
 
-    var stoneMass = _gui_controls.stoneMass;
+    var stoneMass = _gui_controls.centerPieceMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 4.5, 1.5 );
     pos.set( radius * Math.cos(period + 0.1), 0.0,  radius * Math.sin(period + 0.1));
     quat.set( 0, 0, 0, 1 );
@@ -303,7 +303,7 @@ function place_centerpiece(period, radius) {
 
 function place_centerceiling(period, radius) {
     var quat = new THREE.Quaternion();
-    var stoneMass = _gui_controls.stoneMass;
+    var stoneMass = _gui_controls.centerCeilingMass;
     var stoneHalfExtents = new THREE.Vector3( 1.5, 0.75, 3 );
     pos.set( radius * Math.cos(period), 10.0,  radius * Math.sin(period));
     quat.set( 0, 0, 0, 1 );
@@ -312,7 +312,7 @@ function place_centerceiling(period, radius) {
 }
 
 function place_centerblock() {
-    var stoneMass = _gui_controls.stoneMass;
+    var stoneMass = _gui_controls.centerBlockMass;
     var stoneHalfExtents = new THREE.Vector3( 0.5, 2, 1 );
     pos.set( 5.0, 0,  0);
     quat.set( 0, 0, 0, 1 );

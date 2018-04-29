@@ -14,7 +14,14 @@ var GUI_Control = function() {
     this.bunnyMass = 300;
     this.treeMass = 800;
 
-    this.initNumStones = 5;
+    this.outerRingMass = 120;
+    this.outerCeilingMass = 120;
+    this.innerRingMass = 120;
+    this.centerPieceMass = 120;
+    this.centerCeilingMass = 120;
+    this.centerBlockMass = 120;
+
+    this.initNumStones = 0;
 
     this.numStonesAdd = 2;
     this.numBalls = 10;
@@ -92,13 +99,20 @@ _gui_add.open();
 
 // GUI Object Mass Parameters
 _gui_scene = gui.addFolder("Object Mass")
-_gui_scene.add(_gui_controls, 'towerMass', 100, 2000, 50).name("Tower Mass");
-_gui_scene.add(_gui_controls, 'bridgeMass', 10, 500, 10).name("Bridge Mass");
-_gui_scene.add(_gui_controls, 'stoneMass', 10, 500, 10).name("Stone Mass");
-_gui_scene.add(_gui_controls, 'mountainMass', 100, 2000, 10).name("Mountain Mass");
-_gui_scene.add(_gui_controls, 'teapotMass', 100, 2000, 10).name("Teapot Mass");
-_gui_scene.add(_gui_controls, 'bunnyMass', 100, 2000, 10).name("Bunny Mass");
-_gui_scene.add(_gui_controls, 'treeMass', 100, 2000, 10).name("Tree Mass");
+// _gui_scene.add(_gui_controls, 'towerMass', 100, 2000, 50).name("Tower");
+// _gui_scene.add(_gui_controls, 'bridgeMass', 10, 500, 10).name("Bridge");
+// _gui_scene.add(_gui_controls, 'stoneMass', 10, 500, 10).name("Stone");
+// _gui_scene.add(_gui_controls, 'mountainMass', 100, 2000, 10).name("Mountain");
+_gui_scene.add(_gui_controls, 'teapotMass', 100, 2000, 10).name("Teapot");
+_gui_scene.add(_gui_controls, 'bunnyMass', 100, 2000, 10).name("Bunny");
+// _gui_scene.add(_gui_controls, 'treeMass', 100, 2000, 10).name("Tree");
+_gui_scene.add(_gui_controls, 'outerRingMass', 10, 500, 10).name("Outer Ring");
+_gui_scene.add(_gui_controls, 'outerCeilingMass', 10, 500, 10).name("Outer Ceiling");
+_gui_scene.add(_gui_controls, 'innerRingMass', 10, 500, 10).name("Inner Ring");
+_gui_scene.add(_gui_controls, 'centerPieceMass', 10, 500, 10).name("Center Piece");
+_gui_scene.add(_gui_controls, 'centerCeilingMass', 10, 500, 10).name("Center Ceiling");
+_gui_scene.add(_gui_controls, 'centerBlockMass', 10, 500, 10).name("Center Block");
+
 
 // GUI Particle Parameters
 var particle_options = {
