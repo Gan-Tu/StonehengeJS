@@ -211,21 +211,6 @@ function initGraphics() {
 
 // Initialize Sound
 function initSound() {
-    // SEA3D Loader
-    //
-    // loader = new THREE.SEA3D( {
-    //     autoPlay : true // Auto play animations
-    //     // container : scene // Container to add models
-    // } );
-    // loader.onComplete = function( e ) {
-    //     audioListener = loader.audioListener;
-    //     // sound filter
-    //     soundFilter = audioListener.context.createBiquadFilter();
-    //     soundFilter.type = 'lowpass';
-    //     soundFilter.Q.value = 10;
-    //     soundFilter.frequency.value = 440;
-    // };
-    // loader.load( 'models/sound.tjs.sea' );
     // create an AudioListener and add it to the camera
     var listener = new THREE.AudioListener();
     camera.add( listener );
@@ -457,9 +442,9 @@ function place_mesh_as_particles(mesh) {
     while (positions.length < 400) {
         var i = Math.floor(Math.random() * positions.length / 3);
         positions.push(
-            positions[i] + Math.random() * 4 - 2,
-            positions[i+1] + Math.random() * 4 - 2,
-            positions[i+2] + Math.random() * 4 - 2);
+            positions[i] + Math.random() * 3 - 1.5,
+            positions[i+1] + Math.random() * 3 - 1.5,
+            positions[i+2] + Math.random() * 3 - 1.5);
         colors.push( colors[i], colors[i+1], colors[i+2] );
     }
 
