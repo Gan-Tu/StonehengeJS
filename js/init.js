@@ -106,14 +106,19 @@ var collapsable_object_creation_fn = {
     // }
 };
 
-
+// Material
 var stone_material;
+
+// Sound
+var sound, audioLoader;
+
 /************************************* INITIALIZATOIN *************************************/
 
 init();
 
 function init() {
     initGraphics();
+    initSound();
     place_ground();
     place_particles();
 
@@ -203,6 +208,53 @@ function initGraphics() {
     container.appendChild( stats.domElement );
 }
 
+
+// Initialize Sound
+function initSound() {
+    // SEA3D Loader
+    //
+    // loader = new THREE.SEA3D( {
+    //     autoPlay : true // Auto play animations
+    //     // container : scene // Container to add models
+    // } );
+    // loader.onComplete = function( e ) {
+    //     audioListener = loader.audioListener;
+    //     // sound filter
+    //     soundFilter = audioListener.context.createBiquadFilter();
+    //     soundFilter.type = 'lowpass';
+    //     soundFilter.Q.value = 10;
+    //     soundFilter.frequency.value = 440;
+    // };
+    // loader.load( 'models/sound.tjs.sea' );
+    // create an AudioListener and add it to the camera
+    var listener = new THREE.AudioListener();
+    camera.add( listener );
+
+    // create a global audio source
+    sound = new THREE.Audio( listener );
+
+    // load a sound and set it as the Audio object's buffer
+    audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'models/mysterious_floating.mp3', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop(true);
+        sound.setVolume(0.5);
+        sound.play();
+    });
+
+    // GUI Audio
+    _gui_controls.playSound = function() {
+        sound.play();
+    };
+    _gui_controls.stopSound = function() {
+        sound.stop();
+    };
+    _gui_audio = gui.addFolder("Audio")
+    _gui_audio.add(_gui_controls, 'playSound').name("Play Audio");
+    _gui_audio.add(_gui_controls, 'stopSound').name("Stop Audio");
+    _gui_audio.open();
+
+}
 /************************************* STONEHENGE FUNCTIONS *************************************/
 
 function place_outer_ring() {
