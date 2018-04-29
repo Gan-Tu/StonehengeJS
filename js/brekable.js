@@ -13,7 +13,7 @@ function initPhysics() {
 
 initPhysics();
 
-function createObject( mass, halfExtents, pos, quat, material ) {
+function createObject( mass, halfExtents, pos, quat, material, name = null) {
     var object = new THREE.Mesh(
         new THREE.BoxGeometry(  halfExtents.x * 2,
                                 halfExtents.y * 2,
@@ -22,7 +22,9 @@ function createObject( mass, halfExtents, pos, quat, material ) {
     object.quaternion.copy( quat );
     convexBreaker.prepareBreakableObject( object, mass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( object );
-
+    if (name) {
+        object.name = name;
+    }
 
 }
 
@@ -130,8 +132,9 @@ _gui_controls.addStone = function add_stones() {
         pos.set( Math.random() * 10 - 5,
                 Math.random() * 10 - 5,
                 15 * ( Math.random() - i / ( num + 1 ) ) );
-        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
+        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "stones" + (this.totalNumStones + i));
     }
+    this.totalNumStones += num;
 };
 _gui_add.add(_gui_controls, 'addStone').name("add stones");
 

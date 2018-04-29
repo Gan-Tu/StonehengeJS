@@ -36,14 +36,14 @@ function render() {
     // Increase Timer
     time += deltaTime;
 
-    // Experiment
+    // Collapse to Particles
     var time = Date.now() * 0.001;
 
     if (move_points) {
         points.forEach(function movePoints(p) {
             for ( var i = 0; i < p.geometry.attributes.position.count; i++) {
                 p.geometry.attributes.position.setY(i,
-                    p.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
+                    p.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5) * 0.5);
             }
             p.geometry.attributes.position.needsUpdate = true;
         });

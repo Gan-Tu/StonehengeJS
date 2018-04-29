@@ -12,16 +12,16 @@ var GUI_Control = function() {
     this.bunnyMass = 300;
     this.treeMass = 800;
 
-    this.numStones = 5;
-
+    this.initNumStones = 5;
+    this.totalNumStones = 5;
+    
     this.numStonesAdd = 2;
     this.numBalls = 10;
 
-    //this.collapse = false;
-    this.collapse_object = "teapot";
-
-    this.collapse = function () {
-        var collapsed_object = scene.getObjectByName(this.collapse_object);
+    this.collapsed_object = "teapot";
+    
+    this.collapse_by_name = function (name) {
+        var collapsed_object = scene.getObjectByName(name);
         if (collapsed_object) {
             scene.remove(collapsed_object);
             for ( var i = 0, il = rigidBodies.length; i < il; i++ ) {
@@ -36,6 +36,16 @@ var GUI_Control = function() {
             collapsed_object.material.dispose();
 
             move_points = true;
+        }
+    };
+
+    this.collapse = function () {
+        if (this.collapsed_object == "stones") {
+            for ( var i = 0; i < this.totalNumStones; i++ ) {
+                this.collapse_by_name("stones" + i);
+            }
+        } else {
+            this.collapse_by_name(this.collapsed_object);
         }
     };
 }
@@ -68,7 +78,8 @@ _gui_add.add(_gui_controls, 'numBalls', 1, 100, 1).name("# Balls");
 _gui_add.open();
 
 _gui_p = gui.addFolder("Particle Objects");
-_gui_p.add(_gui_controls, 'collapse_object', ["teapot", "bunny", "tree", "stone"]).name("Object Type");
+_gui_p.add(_gui_controls, 'collapsed_object', 
+    ["teapot", "bunny", "tree", "rock-stone", "tower1", "tower2", "bridge", "stones", "mountain"]).name("Object Type");
 _gui_p.add(_gui_controls, 'collapse').name("Explode Object!");
 _gui_p.open();
 

@@ -1,6 +1,6 @@
 /************************************* VARIABLES *************************************/
 
-// Experiment
+// Particle Collapse
 
 var points = [];
 var move_points = false;
@@ -114,7 +114,10 @@ function initGraphics() {
 function createObjects() {
     place_ground();
     place_main_scene();
+    
+    // place teapot
     place_teapot(name = "teapot");
+    
     // place bunny
     place_mesh_with_texture(    mesh_path = 'models/bunny.json', 
                                 texture_path = 'textures/metal.jpg', 
@@ -141,7 +144,7 @@ function createObjects() {
                                 quat = quat, 
                                 mesh_scale = 0.01, 
                                 mass = 400,
-                                name = "stone"
+                                name = "rock-stone"
                             );
 
     place_particles();
@@ -165,28 +168,28 @@ function place_main_scene() {
     var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
     pos.set( -8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
-    createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF0A024 ) );
+    createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF0A024 ), "tower1" );
 
     // Tower 2
     pos.set( 8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
-    createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF4A321 ) );
+    createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF4A321 ), "tower2" );
 
     // Bridge
     var bridgeMass = _gui_controls.bridgeMass;
     var bridgeHalfExtents = new THREE.Vector3( 7, 0.2, 1.5 );
     pos.set( 0, 10.2, 0 );
     quat.set( 0, 0, 0, 1 );
-    createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB38835 ) );
+    createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB38835 ), "bridge");
 
     // Stones
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
-    var numStones = _gui_controls.numStones;
+    var numStones = _gui_controls.initNumStones;
     quat.set( 0, 0, 0, 1 );
     for ( var i = 0; i < numStones; i++ ) {
         pos.set( 0, 2, 15 * ( 0.5 - i / ( numStones + 1 ) ) );
-        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ) );
+        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "stones" + i);
     }
 
     // Mountain
@@ -203,6 +206,7 @@ function place_main_scene() {
     var mountain = new THREE.Mesh( new THREE.ConvexGeometry( mountainPoints ), createMaterial( 0xFFB443 ) );
     mountain.position.copy( pos );
     mountain.quaternion.copy( quat );
+    mountain.name = "mountain";
     convexBreaker.prepareBreakableObject( mountain, mountainMass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( mountain );
 }
@@ -275,7 +279,6 @@ function place_mesh(mesh) {
     var mesh_points = new THREE.Points( geometry, material );
     //points.position.copy( new THREE.Vector3(0, 12.5, 0) );
     mesh_points.position.copy(mesh.position);
-    mesh_points.name = "experiment";
     scene.add( mesh_points );
 
     points.push( mesh_points );
