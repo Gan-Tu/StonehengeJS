@@ -39,34 +39,15 @@ function render() {
     // Experiment
     var time = Date.now() * 0.001;
 
-    if (_gui_controls.collapse) {
-        var teapot = scene.getObjectByName("teapot");
-        if (teapot) {
-            scene.remove(teapot);
-            for ( var i = 0, il = rigidBodies.length; i < il; i++ ) {
-                if (rigidBodies[i] == teapot) {
-                    rigidBodies.splice(i, 1);
-                }
+    if (move_points) {
+        points.forEach(function movePoints(p) {
+            for ( var i = 0; i < p.geometry.attributes.position.count; i++) {
+                p.geometry.attributes.position.setY(i,
+                    p.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
             }
-            removeDebris(teapot);
-            teapot.geometry.dispose();
-            teapot.material.dispose();
-            show_points = true;
-        } else {
-            if (points && points_placed) {
-                for ( var i = 0; i < points.geometry.attributes.position.count; i++) {
-                    points.geometry.attributes.position.setY(i,
-                        points.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
-                }
-                points.geometry.attributes.position.needsUpdate = true;
-            } else {
-                if (show_points) {
-                    place_teapot_particle_mesh();
-                    points_placed = true;
-                } 
-            }
-        }
-    }
+            p.geometry.attributes.position.needsUpdate = true;
+        });
+    } 
 
     // Render Again
     renderer.render( scene, camera );

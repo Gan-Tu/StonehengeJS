@@ -2,9 +2,8 @@
 
 // Experiment
 
-var points;
-var points_placed = false;
-var show_points = false;
+var points = [];
+var move_points = false;
 
 // Particle
 var tick = 0;
@@ -115,14 +114,15 @@ function initGraphics() {
 function createObjects() {
     place_ground();
     place_main_scene();
-    place_teapot();
+    place_teapot(name = "teapot");
     // place bunny
     place_mesh_with_texture(    mesh_path = 'models/bunny.json', 
                                 texture_path = 'textures/metal.jpg', 
                                 pos = new THREE.Vector3(0, -1.5, 15), 
                                 quat = new THREE.Vector4( 0, 0, 0, 1 ), 
                                 mesh_scale = 30, 
-                                mass = _gui_controls.bunnyMass
+                                mass = _gui_controls.bunnyMass,
+                                name = "bunny"
                             );
     // place tree
     place_mesh_with_texture(    mesh_path = 'models/tree.json', 
@@ -130,7 +130,8 @@ function createObjects() {
                                 pos = new THREE.Vector3(10, -2, 10), 
                                 quat = new THREE.Vector4( 0, 0, 0, 1 ), 
                                 mesh_scale = 10., 
-                                mass =_gui_controls.treeMass
+                                mass =_gui_controls.treeMass,
+                                name = "tree"
                             );
     
     // place rock stone
@@ -139,11 +140,11 @@ function createObjects() {
                                 pos = new THREE.Vector3(-20, 0, 20), 
                                 quat = quat, 
                                 mesh_scale = 0.01, 
-                                mass = 400
+                                mass = 400,
+                                name = "stone"
                             );
 
     place_particles();
-    //place_teapot_particle_mesh();
 }
 
 function place_ground() {
@@ -232,7 +233,7 @@ function place_particles() {
 }
 
 
-function place_teapot_particle_mesh() {
+function place_mesh(mesh) {
     var particles = 50000;
     var geometry = new THREE.BufferGeometry();
     var positions = [];
@@ -240,14 +241,15 @@ function place_teapot_particle_mesh() {
     var color = new THREE.Color();
     var n = 20, n2 = n / 2; // particles spread in the cube
 
-    var threeGeo = new THREE.TeapotBufferGeometry(2, 5, true, true, true, false, true)
+    //var threeGeo = new THREE.TeapotBufferGeometry(2, 5, true, true, true, false, true);
+    var threeGeo = new THREE.BufferGeometry().fromGeometry(mesh.geometry);
 
     for ( var i = 0; i < threeGeo.attributes.position.array.length; i += 3 ) {
         // positions
         
-        var x = threeGeo.attributes.position.array[i];//Math.random() * n - n2 + 40;
-        var y = threeGeo.attributes.position.array[i+1];//Math.random() * n - n2 + 40;
-        var z = threeGeo.attributes.position.array[i+2];//Math.random() * n - n2 + 40;
+        var x = threeGeo.attributes.position.array[i];
+        var y = threeGeo.attributes.position.array[i+1];
+        var z = threeGeo.attributes.position.array[i+2];
 
 
         positions.push( x, y, z );
@@ -270,15 +272,18 @@ function place_teapot_particle_mesh() {
             transparent: true
         } );
 
-    points = new THREE.Points( geometry, material );
-    points.position.copy( new THREE.Vector3(0, 12.5, 0) );
-    points.name = "experiment";
-    scene.add( points );
+    var mesh_points = new THREE.Points( geometry, material );
+    //points.position.copy( new THREE.Vector3(0, 12.5, 0) );
+    mesh_points.position.copy(mesh.position);
+    mesh_points.name = "experiment";
+    scene.add( mesh_points );
+
+    points.push( mesh_points );
 }
 
 
 function place_mesh_with_texture(mesh_path, texture_path, pos, quat, 
-                                mesh_scale, mass) {
+                                 mesh_scale, mass, name) {
     jsonLoader.load(
         mesh_path,
         function (geometry, material) {
@@ -291,6 +296,7 @@ function place_mesh_with_texture(mesh_path, texture_path, pos, quat,
                 mesh_obj = new THREE.Mesh( geometry, mesh_material );
                 mesh_obj.position.copy( pos );
                 mesh_obj.quaternion.copy( quat );
+                mesh_obj.name = name;
                 convexBreaker.prepareBreakableObject( mesh_obj, mass, new THREE.Vector3(), new THREE.Vector3(), true );
                 createDebrisFromBreakableObject( mesh_obj );
             } );

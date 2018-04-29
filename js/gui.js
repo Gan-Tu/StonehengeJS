@@ -17,7 +17,27 @@ var GUI_Control = function() {
     this.numStonesAdd = 2;
     this.numBalls = 10;
 
-    this.collapse = false;
+    //this.collapse = false;
+    this.collapse_object = "teapot";
+
+    this.collapse = function () {
+        var collapsed_object = scene.getObjectByName(this.collapse_object);
+        if (collapsed_object) {
+            scene.remove(collapsed_object);
+            for ( var i = 0, il = rigidBodies.length; i < il; i++ ) {
+                if (rigidBodies[i] == collapsed_object) {
+                    rigidBodies.splice(i, 1);
+                }
+            }
+            place_mesh(collapsed_object);
+            
+            removeDebris(collapsed_object);
+            collapsed_object.geometry.dispose();
+            collapsed_object.material.dispose();
+
+            move_points = true;
+        }
+    };
 }
 
 
@@ -48,7 +68,8 @@ _gui_add.add(_gui_controls, 'numBalls', 1, 100, 1).name("# Balls");
 _gui_add.open();
 
 _gui_p = gui.addFolder("Particle Objects");
-_gui_p.add(_gui_controls, 'collapse').name("Collapse Teapot");
+_gui_p.add(_gui_controls, 'collapse_object', ["teapot", "bunny", "tree", "stone"]).name("Object Type");
+_gui_p.add(_gui_controls, 'collapse').name("Explode Object!");
 _gui_p.open();
 
 var particle_options = {
