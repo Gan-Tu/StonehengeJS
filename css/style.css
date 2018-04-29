@@ -86,7 +86,7 @@ body {
     overflow: hidden;
 }
 #info {
-    color: #fff;
+    color: black;/*#fff;*/
     position: absolute;
     top: 10px;
     width: 100%;
@@ -94,5 +94,5 @@ body {
     z-index: 100;
     display:block;
 }
-a { color: white }
+a { color: black }
 

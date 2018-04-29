@@ -163,7 +163,7 @@ function initGraphics() {
 
     // Initialize Camera Settings
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
-    camera.position.set( -10, 40, -10);
+    camera.position.set( -30, 30, -5);
 
     // Initialize Scene
     scene = new THREE.Scene();
