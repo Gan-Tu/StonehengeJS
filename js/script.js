@@ -3,7 +3,8 @@
 // Experiment
 
 var points;
-
+var points_placed = false;
+var show_points = false;
 
 // Particle
 var tick = 0;

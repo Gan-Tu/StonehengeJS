@@ -23,6 +23,7 @@ function createObject( mass, halfExtents, pos, quat, material ) {
     convexBreaker.prepareBreakableObject( object, mass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( object );
 
+
 }
 
 function createParalellepipedWithPhysics( sx, sy, sz, mass, pos, quat, material ) {

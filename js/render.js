@@ -12,6 +12,9 @@ function animate() {
 
 function render() {
 
+    // Update Controls
+    controls.update();
+
     // Update Physics of Breakable Objects
     var deltaTime = clock.getDelta();
     updatePhysics( deltaTime );
@@ -30,28 +33,43 @@ function render() {
     }
     particleSystem.update( tick );
 
-    // Render Again
-    renderer.render( scene, camera );
     // Increase Timer
     time += deltaTime;
 
     // Experiment
     var time = Date.now() * 0.001;
-    // points.rotation.y = time * 0.5;
 
     if (_gui_controls.collapse) {
         var teapot = scene.getObjectByName("teapot");
         if (teapot) {
             scene.remove(teapot);
-            place_teapot_particle_mesh();
-        } else {
-            for ( var i = 0; i < points.geometry.attributes.position.count; i++) {
-                points.geometry.attributes.position.setY(i,
-                    points.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
+            for ( var i = 0, il = rigidBodies.length; i < il; i++ ) {
+                if (rigidBodies[i] == teapot) {
+                    rigidBodies.splice(i, 1);
+                }
             }
-            points.geometry.attributes.position.needsUpdate = true;
+            removeDebris(teapot);
+            teapot.geometry.dispose();
+            teapot.material.dispose();
+            show_points = true;
+        } else {
+            if (points && points_placed) {
+                for ( var i = 0; i < points.geometry.attributes.position.count; i++) {
+                    points.geometry.attributes.position.setY(i,
+                        points.geometry.attributes.position.getY(i) - (Math.random() * 2 - 0.5));
+                }
+                points.geometry.attributes.position.needsUpdate = true;
+            } else {
+                if (show_points) {
+                    place_teapot_particle_mesh();
+                    points_placed = true;
+                } 
+            }
         }
     }
+
+    // Render Again
+    renderer.render( scene, camera );
 }
 
 
@@ -151,6 +169,7 @@ window.addEventListener('resize', function onWindowResize() {
 
 
 // Shot Balls to Break Things
+
 window.addEventListener( 'mousedown', function( event ) {
     mouseCoords.set(
         ( event.clientX / window.innerWidth ) * 2 - 1,
