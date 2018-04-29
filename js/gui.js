@@ -7,8 +7,8 @@ var GUI_Control = function() {
 
     this.towerMass = 1000;
     this.bridgeMass = 250;
-    this.stoneMass = 120;
-    
+    this.stoneMass = 30;
+
     this.mountainMass = 860;
     this.teapotMass = 300;
     this.bunnyMass = 300;
@@ -21,7 +21,7 @@ var GUI_Control = function() {
     this.numBalls = 10;
 
     this.collapsed_object = "teapot";
-    
+
     this.collapse_by_name = function (name) {
         var collapsed_object = scene.getObjectByName(name);
         if (collapsed_object) {
@@ -32,7 +32,7 @@ var GUI_Control = function() {
                 }
             }
             place_mesh(collapsed_object);
-            
+
             removeDebris(collapsed_object);
             collapsed_object.geometry.dispose();
             collapsed_object.material.dispose();
