@@ -103,7 +103,6 @@ function init() {
     }
 
     _gui_p = gui.addFolder("Particle Objects");
-
     _gui_p.add(_gui_controls, 'collapsed_object', Object.keys(collapsable_object_creation_fn)).name("What to collapse");
     _gui_p.add(_gui_controls, 'collapse').name("Explode Object!");
 
@@ -121,6 +120,9 @@ function init() {
     _gui_p.add(_gui_controls, 'add_object_by_name').name("Put Back Object!");
     _gui_p.open();
 
+    
+    // GUI Reload
+    gui.add(_gui_controls, 'reload').name("Reload Scene");
 }
 
 // Initialize Graphics

@@ -1,7 +1,9 @@
+
+// Define GUI Control
 var GUI_Control = function() {
     this.ballMass = 35;
     this.ballRadius = 0.4;
-    this.ballColor = '#202020';
+    this.ballMaterial = 'Marble';
 
     this.towerMass = 1000;
     this.bridgeMass = 250;
@@ -49,20 +51,32 @@ var GUI_Control = function() {
         }
     };
 
+    this.reload = function() {
+        location.reload();
+    };
+
 }
 
-
+// Declare and Initialize GUI
 var _gui_controls = new GUI_Control();
 var gui = new dat.GUI();
 
-
+// GUI Ball Parameters
 _gui_ball = gui.addFolder("Ball Parameters")
-_gui_ball.add(_gui_controls, 'ballColor').name("Ball Color");
+_gui_ball.add(_gui_controls, 'ballMaterial').name("Ball Material");
 _gui_ball.add(_gui_controls, 'ballMass', 5, 50, 1).name("Ball Mass");
 _gui_ball.add(_gui_controls, 'ballRadius', 0.05, 2, 0.01).name("Ball Radius");
 _gui_ball.open();
 
 
+// GUI Objects Addision
+_gui_add = gui.addFolder("Add Objects to Scene")
+_gui_add.add(_gui_controls, 'numStonesAdd', 1, 5, 1).name("# Stones");
+_gui_add.add(_gui_controls, 'numBalls', 1, 100, 1).name("# Balls");
+_gui_add.open();
+
+
+// GUI Object Mass Parameters
 _gui_scene = gui.addFolder("Object Mass")
 _gui_scene.add(_gui_controls, 'towerMass', 100, 2000, 50).name("Tower Mass");
 _gui_scene.add(_gui_controls, 'bridgeMass', 10, 500, 10).name("Bridge Mass");
@@ -71,13 +85,8 @@ _gui_scene.add(_gui_controls, 'mountainMass', 100, 2000, 10).name("Mountain Mass
 _gui_scene.add(_gui_controls, 'teapotMass', 100, 2000, 10).name("Teapot Mass");
 _gui_scene.add(_gui_controls, 'bunnyMass', 100, 2000, 10).name("Bunny Mass");
 _gui_scene.add(_gui_controls, 'treeMass', 100, 2000, 10).name("Tree Mass");
-// _gui_scene.open();
 
-_gui_add = gui.addFolder("Add Objects to Scene")
-_gui_add.add(_gui_controls, 'numStonesAdd', 1, 5, 1).name("# Stones");
-_gui_add.add(_gui_controls, 'numBalls', 1, 100, 1).name("# Balls");
-_gui_add.open();
-
+// GUI Particle Parameters
 var particle_options = {
     position: new THREE.Vector3(),
     positionRandomness: .3,
@@ -113,9 +122,8 @@ _gui_particles.add( spawnerOptions, "spawnRate", 10, 30000 );
 _gui_particles.add( spawnerOptions, "timeScale", -1, 1 );
 
 
-// Disable event listeners on menu
+// GUI Disable EventListeners
 gui.domElement.addEventListener('mousedown', _stopPropagation);
-
 function _stopPropagation(evt) {
     evt.stopPropagation();
 }
