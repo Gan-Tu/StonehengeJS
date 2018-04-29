@@ -46,13 +46,81 @@ var numObjectsToRemove = 0;
 var impactPoint = new THREE.Vector3();
 var impactNormal = new THREE.Vector3();
 
-/************************************* INITIALIZATIONS *************************************/
+// Object Creation
+var collapsable_object_creation_fn = {
+    "tower1" : place_tower1,
+    "tower2" : place_tower2,
+    "bridge": place_bridge,
+    "stones": place_initial_stones,
+    "mountain": place_mountain,
+    "teapot": function() { 
+        place_teapot(name="teapot")
+    },
+    "bunny": function() {
+        place_mesh_with_texture(    mesh_path = 'models/bunny.json', 
+                                    texture_path = 'textures/metal.jpg', 
+                                    pos = new THREE.Vector3(0, -1.5, 15), 
+                                    quat = new THREE.Vector4( 0, 0, 0, 1 ), 
+                                    mesh_scale = 30, 
+                                    mass = _gui_controls.bunnyMass,
+                                    name = "bunny"
+                                );
+    },
+    "tree": function() {
+        place_mesh_with_texture(    mesh_path = 'models/tree.json', 
+                                    texture_path = 'textures/terrain/grasslight-big.jpg', 
+                                    pos = new THREE.Vector3(10, -2, 10), 
+                                    quat = new THREE.Vector4( 0, 0, 0, 1 ), 
+                                    mesh_scale = 10., 
+                                    mass =_gui_controls.treeMass,
+                                    name = "tree"
+                                );
+    },
+    "rock-stone": function() {
+        place_mesh_with_texture(    mesh_path = 'models/stone2.json', 
+                                    texture_path = 'textures/stone.jpg', 
+                                    pos = new THREE.Vector3(-20, 0, 20), 
+                                    quat = quat, 
+                                    mesh_scale = 0.01, 
+                                    mass = 400,
+                                    name = "rock-stone"
+                                );
+    }
+};
+
+/************************************* INITIALIZATOIN *************************************/
 
 init(); 
 
 function init() {
     initGraphics();
-    createObjects();
+    place_ground();
+    place_particles();
+
+    // Create Objects in the Scene that can collapse into particles
+    for (var obj in collapsable_object_creation_fn) {
+        collapsable_object_creation_fn[obj]();
+    }
+
+    _gui_p = gui.addFolder("Particle Objects");
+
+    _gui_p.add(_gui_controls, 'collapsed_object', Object.keys(collapsable_object_creation_fn)).name("What to collapse");
+    _gui_p.add(_gui_controls, 'collapse').name("Explode Object!");
+
+    _gui_controls.added_object = "teapot";
+    _gui_controls.add_object_by_name = function() {
+        if (this.added_object) {
+            var obj = scene.getObjectByName(this.added_object);
+            if (!obj) {
+                collapsable_object_creation_fn[this.added_object]();
+            }
+        }
+    }
+
+    _gui_p.add(_gui_controls, 'added_object', Object.keys(collapsable_object_creation_fn)).name("What to reset?");
+    _gui_p.add(_gui_controls, 'add_object_by_name').name("Put Back Object!");
+    _gui_p.open();
+
 }
 
 // Initialize Graphics
@@ -109,46 +177,8 @@ function initGraphics() {
     container.appendChild( stats.domElement );
 }
 
+
 /************************************* OBJECTS CREATION *************************************/
-
-function createObjects() {
-    place_ground();
-    place_main_scene();
-    
-    // place teapot
-    place_teapot(name = "teapot");
-    
-    // place bunny
-    place_mesh_with_texture(    mesh_path = 'models/bunny.json', 
-                                texture_path = 'textures/metal.jpg', 
-                                pos = new THREE.Vector3(0, -1.5, 15), 
-                                quat = new THREE.Vector4( 0, 0, 0, 1 ), 
-                                mesh_scale = 30, 
-                                mass = _gui_controls.bunnyMass,
-                                name = "bunny"
-                            );
-    // place tree
-    place_mesh_with_texture(    mesh_path = 'models/tree.json', 
-                                texture_path = 'textures/terrain/grasslight-big.jpg', 
-                                pos = new THREE.Vector3(10, -2, 10), 
-                                quat = new THREE.Vector4( 0, 0, 0, 1 ), 
-                                mesh_scale = 10., 
-                                mass =_gui_controls.treeMass,
-                                name = "tree"
-                            );
-    
-    // place rock stone
-    place_mesh_with_texture(    mesh_path = 'models/stone2.json', 
-                                texture_path = 'textures/stone.jpg', 
-                                pos = new THREE.Vector3(-20, 0, 20), 
-                                quat = quat, 
-                                mesh_scale = 0.01, 
-                                mass = 400,
-                                name = "rock-stone"
-                            );
-
-    place_particles();
-}
 
 function place_ground() {
     pos.set( 0, - 0.5, 0 );
@@ -161,28 +191,31 @@ function place_ground() {
     } );
 }
 
-
-function place_main_scene() {
-    // Tower 1
+function place_tower1() {
     var towerMass = _gui_controls.towerMass;
     var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
     pos.set( -8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF0A024 ), "tower1" );
+}
 
-    // Tower 2
+function place_tower2() {
+    var towerMass = _gui_controls.towerMass;
+    var towerHalfExtents = new THREE.Vector3( 2, 5, 2 );
     pos.set( 8, 5, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( towerMass, towerHalfExtents, pos, quat, createMaterial( 0xF4A321 ), "tower2" );
+}
 
-    // Bridge
+function place_bridge() {
     var bridgeMass = _gui_controls.bridgeMass;
     var bridgeHalfExtents = new THREE.Vector3( 7, 0.2, 1.5 );
     pos.set( 0, 10.2, 0 );
     quat.set( 0, 0, 0, 1 );
     createObject( bridgeMass, bridgeHalfExtents, pos, quat, createMaterial( 0xB38835 ), "bridge");
+}
 
-    // Stones
+function place_initial_stones() {
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 2, 0.15 );
     var numStones = _gui_controls.initNumStones;
@@ -191,8 +224,9 @@ function place_main_scene() {
         pos.set( 0, 2, 15 * ( 0.5 - i / ( numStones + 1 ) ) );
         createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "stones" + i);
     }
+}
 
-    // Mountain
+function place_mountain() {
     var mountainMass = _gui_controls.mountainMass;
     var mountainHalfExtents = new THREE.Vector3( 4, 5, 4 );
     pos.set( 5, mountainHalfExtents.y * 0.5, - 7 );
@@ -211,10 +245,9 @@ function place_main_scene() {
     createDebrisFromBreakableObject( mountain );
 }
 
-
 function place_teapot() {
     var teapotMass = _gui_controls.teapotMass;
-    var teapot_pos = new THREE.Vector3(0, 11.2, 0);
+    var teapot_pos = new THREE.Vector3(0, 12, 0);
     var teapot_quat = new THREE.Vector4( 0, 0, 0, 1 );
 
     var threeGeo = new THREE.Geometry().fromBufferGeometry(
@@ -245,7 +278,6 @@ function place_mesh(mesh) {
     var color = new THREE.Color();
     var n = 20, n2 = n / 2; // particles spread in the cube
 
-    //var threeGeo = new THREE.TeapotBufferGeometry(2, 5, true, true, true, false, true);
     var threeGeo = new THREE.BufferGeometry().fromGeometry(mesh.geometry);
 
     for ( var i = 0; i < threeGeo.attributes.position.array.length; i += 3 ) {
@@ -277,7 +309,6 @@ function place_mesh(mesh) {
         } );
 
     var mesh_points = new THREE.Points( geometry, material );
-    //points.position.copy( new THREE.Vector3(0, 12.5, 0) );
     mesh_points.position.copy(mesh.position);
     scene.add( mesh_points );
 
@@ -306,3 +337,4 @@ function place_mesh_with_texture(mesh_path, texture_path, pos, quat,
         }
     );
 }
+

@@ -33,5 +33,5 @@ require("./threejs-js/GPUParticleSystem.js")
 
 require("./gui.js")
 require("./brekable.js")
-require("./script.js")
+require("./init.js")
 require("./render.js")

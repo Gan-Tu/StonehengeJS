@@ -14,7 +14,7 @@ var GUI_Control = function() {
 
     this.initNumStones = 5;
     this.totalNumStones = 5;
-    
+
     this.numStonesAdd = 2;
     this.numBalls = 10;
 
@@ -48,6 +48,7 @@ var GUI_Control = function() {
             this.collapse_by_name(this.collapsed_object);
         }
     };
+
 }
 
 
@@ -76,12 +77,6 @@ _gui_add = gui.addFolder("Add Objects to Scene")
 _gui_add.add(_gui_controls, 'numStonesAdd', 1, 5, 1).name("# Stones");
 _gui_add.add(_gui_controls, 'numBalls', 1, 100, 1).name("# Balls");
 _gui_add.open();
-
-_gui_p = gui.addFolder("Particle Objects");
-_gui_p.add(_gui_controls, 'collapsed_object', 
-    ["teapot", "bunny", "tree", "rock-stone", "tower1", "tower2", "bridge", "stones", "mountain"]).name("Object Type");
-_gui_p.add(_gui_controls, 'collapse').name("Explode Object!");
-_gui_p.open();
 
 var particle_options = {
     position: new THREE.Vector3(),
