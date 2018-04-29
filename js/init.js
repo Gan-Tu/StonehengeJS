@@ -77,7 +77,7 @@ var collapsable_object_creation_fn = {
     "bunny": function() {
         place_mesh_with_texture(    mesh_path = 'models/bunny.json',
                                     texture_path = 'textures/metal.jpg',
-                                    pos = new THREE.Vector3(0, -1.5, 15),
+                                    pos = new THREE.Vector3(-10, -1, 0),
                                     quat = new THREE.Vector4( 0, 0, 0, 1 ),
                                     mesh_scale = 30,
                                     mass = _gui_controls.bunnyMass,
@@ -94,18 +94,20 @@ var collapsable_object_creation_fn = {
     //                                 name = "tree"
     //                             );
     // },
-    "rock-stone": function() {
-        place_mesh_with_texture(    mesh_path = 'models/stone2.json',
-                                    texture_path = 'textures/stone.jpg',
-                                    pos = new THREE.Vector3(-20, 0, 20),
-                                    quat = quat,
-                                    mesh_scale = 0.01,
-                                    mass = 400,
-                                    name = "rock-stone"
-                                );
-    }
+    // "rock-stone": function() {
+    //     place_mesh_with_texture(    mesh_path = 'models/stone2.json',
+    //                                 texture_path = 'textures/stone.jpg',
+    //                                 pos = new THREE.Vector3(-20, 0, 20),
+    //                                 quat = quat,
+    //                                 mesh_scale = 0.01,
+    //                                 mass = 400,
+    //                                 name = "rock-stone"
+    //                             );
+    // }
 };
 
+
+var stone_material;
 /************************************* INITIALIZATOIN *************************************/
 
 init();
@@ -115,26 +117,30 @@ function init() {
     place_ground();
     place_particles();
 
-    // Create Objects in the Scene that can collapse into particles
-    for (var obj in collapsable_object_creation_fn) {
-        collapsable_object_creation_fn[obj]();
-    }
+    textureLoader.load( 'textures/stone4.jpg', function( texture ) {
+        stone_material = new THREE.MeshPhongMaterial( { map: texture });
+        // Create Objects in the Scene that can collapse into particles
+        for (var obj in collapsable_object_creation_fn) {
+            collapsable_object_creation_fn[obj]();
+        }
+    } );
+
 
     _gui_p = gui.addFolder("Particle Objects");
-    _gui_p.add(_gui_controls, 'collapsed_object', Object.keys(collapsable_object_creation_fn)).name("What to collapse");
+    _gui_p.add(_gui_controls, 'chosen_object',
+                 Object.keys(collapsable_object_creation_fn)).name("Object Chosen:");
+
     _gui_p.add(_gui_controls, 'collapse').name("Explode Object!");
 
-    _gui_controls.added_object = "teapot";
+
     _gui_controls.add_object_by_name = function() {
-        if (this.added_object) {
-            var obj = scene.getObjectByName(this.added_object);
+        if (this.chosen_object) {
+            var obj = scene.getObjectByName(this.chosen_object);
             if (!obj) {
-                collapsable_object_creation_fn[this.added_object]();
+                collapsable_object_creation_fn[this.chosen_object]();
             }
         }
     }
-
-    _gui_p.add(_gui_controls, 'added_object', Object.keys(collapsable_object_creation_fn)).name("What to reset?");
     _gui_p.add(_gui_controls, 'add_object_by_name').name("Put Back Object!");
     _gui_p.open();
 
@@ -152,7 +158,7 @@ function initGraphics() {
 
     // Initialize Camera Settings
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.2, 2000 );
-    camera.position.set( -28, 16, 36 );
+    camera.position.set( -10, 40, -10);
 
     // Initialize Scene
     scene = new THREE.Scene();
@@ -200,6 +206,7 @@ function initGraphics() {
 /************************************* STONEHENGE FUNCTIONS *************************************/
 
 function place_outer_ring() {
+    var quat = new THREE.Quaternion();
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 0.75, 4, 1.25 );
     var radius = 20.0;
@@ -208,11 +215,12 @@ function place_outer_ring() {
         pos.set( radius * Math.cos(period), 0.0,  radius * Math.sin(period));
         quat.set( 0, 0, 0, 1 );
         quat.setFromAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 2.0 * (30.0 - i) * Math.PI / 30.0);
-        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "outer_ring" + i);
+        createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "outer_ring");
     }
 }
 
 function place_outer_ceiling() {
+    var quat = new THREE.Quaternion();
   var stoneMass = _gui_controls.stoneMass;
   var stoneHalfExtents = new THREE.Vector3( 0.75, 0.5, 1.95 );
   var radius = 20.0;
@@ -222,43 +230,48 @@ function place_outer_ceiling() {
       pos.set( radius * Math.cos(period), 8.0,  radius * Math.sin(period));
       quat.set( 0, 0, 0, 1 );
       quat.setFromAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 2.0 * (30.0 - i) * Math.PI / 30.0 - offset);
-      createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "outer_ceiling" + i);
+      createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "outer_ceiling");
   }
 }
 
 function place_inter_ring() {
+    var quat = new THREE.Quaternion();
     var stoneMass = _gui_controls.stoneMass;
-    var stoneHalfExtents = new THREE.Vector3( 0.15, 1, 0.15 );
+    var stoneHalfExtents = new THREE.Vector3( 0.15, 2, 0.35 );
     var radius = 15.0;
     for (var i = 0; i < 60; i++) {
         var period = i * 2.0 * Math.PI / 60.0;
         pos.set( radius * Math.cos(period), 0.0,  radius * Math.sin(period));
         quat.set( 0, 0, 0, 1 );
         quat.setFromAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 2.0 * (60.0 - i) * Math.PI / 60.0);
-        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xD0D0D0 ), "inter_ring" + i);
+        createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "inter_ring");
     }
 }
 
 function place_centerpiece(period, radius) {
+    var quat = new THREE.Quaternion();
+
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1, 4.5, 1.5 );
     pos.set( radius * Math.cos(period + 0.1), 0.0,  radius * Math.sin(period + 0.1));
     quat.set( 0, 0, 0, 1 );
     quat.setFromAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 2.0 * Math.PI - period - 0.1);
-    createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xC0C0C0 ), "centerpiece");
+    createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "centerpiece");
+
     pos.set( radius * Math.cos(period - 0.1), 0.0,  radius * Math.sin(period - 0.1));
     quat.set( 0, 0, 0, 1 );
     quat.setFromAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 2.0 * Math.PI - period + 0.1);
-    createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xC0C0C0 ), "centerpiece");
+    createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "centerpiece");
 }
 
 function place_centerceiling(period, radius) {
+    var quat = new THREE.Quaternion();
     var stoneMass = _gui_controls.stoneMass;
     var stoneHalfExtents = new THREE.Vector3( 1.5, 0.75, 3 );
     pos.set( radius * Math.cos(period), 10.0,  radius * Math.sin(period));
     quat.set( 0, 0, 0, 1 );
     quat.setFromAxisAngle(new THREE.Vector3(0.0, 1.0, 0.0), 2.0 * Math.PI - period);
-    createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xC0C0C0 ), "ceilingpiece");
+    createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "centerceiling");
 }
 
 function place_centerblock() {
@@ -266,7 +279,7 @@ function place_centerblock() {
     var stoneHalfExtents = new THREE.Vector3( 0.5, 2, 1 );
     pos.set( 5.0, 0,  0);
     quat.set( 0, 0, 0, 1 );
-    createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xC0C0C0 ), "ceilingpiece");
+    createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "centerblock");
 }
 
 /************************************* OBJECTS CREATION *************************************/
@@ -313,7 +326,7 @@ function place_initial_stones() {
     quat.set( 0, 0, 0, 1 );
     for ( var i = 0; i < numStones; i++ ) {
         pos.set( 0, 2, 15 * ( 0.5 - i / ( numStones + 1 ) ) );
-        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "stones" + i);
+        createObject( stoneMass, stoneHalfExtents, pos, quat, stone_material, "stones");
     }
 }
 
@@ -361,8 +374,7 @@ function place_particles() {
 }
 
 
-function place_mesh(mesh) {
-    var particles = 50000;
+function place_mesh_as_particles(mesh) {
     var geometry = new THREE.BufferGeometry();
     var positions = [];
     var colors = [];
@@ -388,6 +400,17 @@ function place_mesh(mesh) {
         color.setRGB( vx, vy, vz );
         colors.push( color.r, color.g, color.b );
     }
+
+    // Increase the number of particles
+    while (positions.length < 400) {
+        var i = Math.floor(Math.random() * positions.length / 3);
+        positions.push(
+            positions[i] + Math.random() * 4 - 2,
+            positions[i+1] + Math.random() * 4 - 2,
+            positions[i+2] + Math.random() * 4 - 2);
+        colors.push( colors[i], colors[i+1], colors[i+2] );
+    }
+
     geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
     geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
     var material = new THREE.PointsMaterial( {

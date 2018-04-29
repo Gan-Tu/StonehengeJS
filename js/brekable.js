@@ -23,7 +23,12 @@ function createObject( mass, halfExtents, pos, quat, material, name = null) {
     convexBreaker.prepareBreakableObject( object, mass, new THREE.Vector3(), new THREE.Vector3(), true );
     createDebrisFromBreakableObject( object );
     if (name) {
-        object.name = name;
+        if (name in _gui_controls.object_counts) {
+            _gui_controls.object_counts[name]++;
+        } else {
+            _gui_controls.object_counts[name] = 0;
+        }
+        object.name = name + _gui_controls.object_counts[name];
     }
 
 }
@@ -49,7 +54,7 @@ function createDebrisFromBreakableObject( object ) {
     object.receiveShadow = true;
     var shape = createConvexHullPhysicsShape( object.geometry.vertices );
     shape.setMargin( margin );
-    var body = createRigidBody( object, shape, object.userData.mass, null, null, object.userData.velocity, object.userData.angularVelocity );
+    var body = createRigidBody( object, shape, object.userData.mass, null, null, object.userData.velocity, object.userData.angularVelocity);
     // Set pointer back to the three object only in the debris objects
     var btVecUserData = new Ammo.btVector3( 0, 0, 0 );
     btVecUserData.threeObject = object;
@@ -72,7 +77,7 @@ function createConvexHullPhysicsShape( points ) {
     return shape;
 }
 
-function createRigidBody( object, physicsShape, mass, pos, quat, vel, angVel ) {
+function createRigidBody( object, physicsShape, mass, pos, quat, vel, angVel) {
     if ( pos ) {
         object.position.copy( pos );
     }
@@ -132,9 +137,8 @@ _gui_controls.addStone = function add_stones() {
         pos.set( Math.random() * 10 - 5,
                 Math.random() * 10 - 5,
                 15 * ( Math.random() - i / ( num + 1 ) ) );
-        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "stones" + (this.totalNumStones + i));
+        createObject( stoneMass, stoneHalfExtents, pos, quat, createMaterial( 0xB0B0B0 ), "stones");
     }
-    this.totalNumStones += num;
 };
 _gui_add.add(_gui_controls, 'addStone').name("add stones");
 

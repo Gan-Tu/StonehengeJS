@@ -1,13 +1,13 @@
 
 // Define GUI Control
 var GUI_Control = function() {
-    this.ballMass = 35;
+    this.ballMass = 100;
     this.ballRadius = 0.4;
     this.ballMaterial = 'Marble';
 
     this.towerMass = 1000;
     this.bridgeMass = 250;
-    this.stoneMass = 30;
+    this.stoneMass = 120;
 
     this.mountainMass = 860;
     this.teapotMass = 300;
@@ -15,12 +15,11 @@ var GUI_Control = function() {
     this.treeMass = 800;
 
     this.initNumStones = 5;
-    this.totalNumStones = 5;
 
     this.numStonesAdd = 2;
     this.numBalls = 10;
 
-    this.collapsed_object = "teapot";
+    this.chosen_object = "teapot";
 
     this.collapse_by_name = function (name) {
         var collapsed_object = scene.getObjectByName(name);
@@ -31,7 +30,7 @@ var GUI_Control = function() {
                     rigidBodies.splice(i, 1);
                 }
             }
-            place_mesh(collapsed_object);
+            place_mesh_as_particles(collapsed_object);
 
             removeDebris(collapsed_object);
             collapsed_object.geometry.dispose();
@@ -41,14 +40,17 @@ var GUI_Control = function() {
         }
     };
 
+    this.object_counts = {};
+
     this.collapse = function () {
-        if (this.collapsed_object == "stones") {
-            for ( var i = 0; i < this.totalNumStones; i++ ) {
-                this.collapse_by_name("stones" + i);
+        if (this.chosen_object in this.object_counts) {
+            for ( var i = 0; i <= this.object_counts[this.chosen_object]; i++ ) {
+                this.collapse_by_name(this.chosen_object + i);
             }
         } else {
-            this.collapse_by_name(this.collapsed_object);
+            this.collapse_by_name(this.chosen_object);
         }
+        delete this.object_counts[this.chosen_object];
     };
 
     this.reload = function() {
@@ -64,7 +66,7 @@ var gui = new dat.GUI();
 // GUI Ball Parameters
 _gui_ball = gui.addFolder("Ball Parameters")
 _gui_ball.add(_gui_controls, 'ballMaterial').name("Ball Material");
-_gui_ball.add(_gui_controls, 'ballMass', 5, 50, 1).name("Ball Mass");
+_gui_ball.add(_gui_controls, 'ballMass', 5, 250, 10).name("Ball Mass");
 _gui_ball.add(_gui_controls, 'ballRadius', 0.05, 2, 0.01).name("Ball Radius");
 _gui_ball.open();
 
