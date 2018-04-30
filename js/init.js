@@ -172,6 +172,7 @@ function initGraphics() {
     // Initialize Orbit Controls
     controls = new THREE.OrbitControls( camera);
     controls.target.set( 0, 2, 0 );
+    controls.maxDistance = 100;
     controls.update();
 
     // Initialize Web rendering
