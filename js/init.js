@@ -132,6 +132,7 @@ function init() {
 
 
     _gui_p = gui.addFolder("Particle Objects");
+    _gui_p.add(_gui_controls, 'explosionSpeed', 0.5, 3.5, 0.1).name("Explosion Speed");
 
     _gui_p.add(_gui_controls, 'chosen_object', Object.keys(collapsable_object_creation_fn)).name("Object Chosen:");
 

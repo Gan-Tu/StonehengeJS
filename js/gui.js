@@ -30,7 +30,10 @@ var GUI_Control = function() {
 
     this.explosion_dir = [];
 
+    this.explosionSpeed = 2;
+
     this.explode_by_name = function (name) {
+        _gui_controls.explosion_dir = [];
         var collapsed_object = scene.getObjectByName(name);
         if (collapsed_object) {
             scene.remove(collapsed_object);
@@ -48,7 +51,7 @@ var GUI_Control = function() {
             points.forEach(function movePoints(p) {
                 for ( var i = 0; i < p.geometry.attributes.position.count; i++) {
 
-                    var explosionSpeed = 2;
+                    var explosionSpeed = _gui_controls.explosionSpeed;
                     var xdir = Math.random() * explosionSpeed - explosionSpeed/2;
                     var ydir = Math.random() * explosionSpeed - explosionSpeed/2;
                     var zdir = Math.random() * explosionSpeed - explosionSpeed/2;
