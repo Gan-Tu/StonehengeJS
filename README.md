@@ -1,5 +1,7 @@
-# cs184-final-project
+# StonehengeJs
 
-[live demo](http://michael-tu.github.io/cs184-final-project/)
+bit.ly/stonehenge-js
+
+[live demo](http://michael-tu.github.io/StonehengeJS/)
 
 [project site](https://gibbes.github.io/finalproj-cs184/)
