@@ -1,83 +1,49 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>CS184 Final Project | Gan Tu, Michael Gibbes, Noah Jacobs</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-
-        <meta property="og:title" content="CS184 Final Project | Gan Tu, Michael Gibbes, Noah Jacobs" />
-        <meta property="og:description" content="CS184 Final Project build by Gan Tu." />
-
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:700">
-
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-    </head>
-    <body>
-        <div class="mobile" style="display: none">
-            <p>Sorry, this project is not designed for mobile devices.</p>
-        </div>
-
-        <div id="info">
-            <a href="https://gibbes.github.io/finalproj-cs184/" target="_blank" rel="noopener"><b>Final CS 184 Project</a> - Created by Gan Tu, Michael Gibbes, Noah Jacobs</b></a>
-
-            <br><br><b>Stonehenge - Dynamic Physics Interaction System</b><br>
-        </div>
-
-        <div id="container"><br /><br /><br /><br /><br />Loading...</div>
-
-
-        <div class="footer">
-            <div class="credit">Credit: <a href="http://graphics.cs.williams.edu/data/meshes.xml#14" target="_blank">Lee Perry-Smith</a> head</div>
-            <span><a href="http://www.edankwan.com/" target="_blank">Edan Kwan</a></span>
-            <span>|</span>
-            <span><a href="https://github.com/edankwan/SMASHING-Mega-Scene" target="_blank">Github</a></span>
-            <span>|</span>
-            <span><a href="https://www.youtube.com/watch?v=nR7uJdP_HRk" target="_blank">Youtube</a></span>
-        </div>
-
-
-        <script src="js/three.min.js"></script>
-        <script src="js/dat.gui.min.js"></script>
-
-        <script src="js/threejs-js/controls/OrbitControls.js"></script>
-
-        <script src="js/threejs-js/postprocessing/EffectComposer.js"></script>
-        <script src="js/threejs-js/postprocessing/RenderPass.js"></script>
-        <script src="js/threejs-js/postprocessing/ShaderPass.js"></script>
-        <script src="js/threejs-js/postprocessing/MaskPass.js"></script>
-        <script src="js/threejs-js/shaders/CopyShader.js"></script>
-        <script src="js/threejs-js/shaders/ColorCorrectionShader.js"></script>
-        <script src="js/threejs-js/shaders/VignetteShader.js"></script>
-
-        <!-- <script src="js/threejs-js/loaders/sea3d/SEA3D.js"></script>
-        <script src="js/threejs-js/loaders/sea3d/SEA3DLZMA.js"></script>
-        <script src="js/threejs-js/loaders/sea3d/SEA3DLoader.js"></script> -->
-
-        <script src="js/threejs-js/libs/o3dgc.js"></script>
-        <script src="js/threejs-js/loaders/sea3d/o3dgc/SEA3DGC.js"></script>
-
-        <script src="js/threejs-js/Detector.js"></script>
-        <script src="js/threejs-js/libs/stats.min.js"></script>
-
-        <!-- <script src="js/threejs-js/shaders/FresnelShader.js"></script> -->
-
-
-        <script src="js/threejs-js/libs/ammo.js"></script>
-        <script src="js/threejs-js/controls/OrbitControls.js"></script>
-        <script src="js/threejs-js/Detector.js"></script>
-        <script src="js/threejs-js/libs/stats.min.js"></script>
-        <script src="js/threejs-js/ConvexObjectBreaker.js"></script>
-        <script src="js/threejs-js/QuickHull.js"></script>
-        <script src="js/threejs-js/geometries/ConvexGeometry.js"></script>
-        <script src="js/threejs-js/geometries/TeapotBufferGeometry.js"></script>
-
-        <script src="js/threejs-js/GPUParticleSystem.js"></script>
-
-        <script src="js/gui.js"></script>
-        <script src="js/brekable.js"></script>
-        <script src="js/init.js"></script>
-        <script src="js/render.js"></script>
-    </body>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#222b29" />
+  <meta name="description" content="Explore an atmospheric Stonehenge reconstruction. Walk around the ancient stones, experiment with heavy impacts, and watch the physics unfold." />
+  <title>Stonehenge — A Living Monument</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%23222b29'/%3E%3Cpath d='M10 13h28v7H10zm3 8h7v17h-7zm15 0h7v17h-7z' fill='%23e3dcc7'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <main id="scene" aria-label="Interactive 3D Stonehenge landscape"></main>
+  <div id="loading" role="status"><span class="loading-mark">Ⅱ</span><p>Arriving at Stonehenge</p><small id="loading-detail">Preparing the landscape…</small></div>
+  <header class="masthead">
+    <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 7h24v6H4zm3 8h6v14H7zm12 0h6v14h-6z"/></svg><span>STONEHENGE<span class="brand-sub">A LIVING MONUMENT</span></span></div>
+    <div class="location">SALISBURY PLAIN, ENGLAND<span>51°10′44″ N &nbsp; 1°49′34″ W</span></div>
+    <a class="original-link" href="./original/index.html">Original app <span aria-hidden="true">→</span></a>
+    <button class="icon-button" id="about-open" aria-label="About this reconstruction" title="About this reconstruction">i</button>
+  </header>
+  <section class="intro" aria-label="Scene introduction"><span class="eyebrow">4,500 YEARS. A MOMENT IN TIME.</span><h1>Where time<br>stands still.</h1><p>Wander among the stones.<br>Or set history in motion.</p></section>
+  <aside class="settings" aria-label="Scene controls">
+    <div class="panel-heading"><span class="eyebrow">YOUR EXPERIMENT</span><button id="settings-toggle" aria-expanded="true" aria-controls="settings-body" aria-label="Collapse controls">−</button></div>
+    <div id="settings-body">
+      <label class="field-title" for="layout">The monument</label>
+      <select id="layout"><option value="ruins">Weathered ruins</option><option value="restored">Reconstructed circle</option></select>
+      <label class="field-title" for="light">The atmosphere</label>
+      <select id="light"><option value="afternoon">Late afternoon</option><option value="golden">Golden hour</option><option value="overcast">Overcast</option></select>
+      <div class="range-label"><label for="power">Impact power</label><output id="power-value" for="power">55%</output></div>
+      <input id="power" type="range" min="15" max="100" value="55" step="1" />
+      <div class="setting-row"><label for="fracture">Stone fractures</label><input id="fracture" type="checkbox" role="switch" checked /></div>
+      <div class="setting-row"><label for="sound">Impact sound</label><input id="sound" type="checkbox" role="switch" /></div>
+      <div class="panel-divider"></div>
+      <div class="time-controls"><button id="slow" aria-pressed="false">¼× <span>Slow motion</span></button><button id="pause" aria-label="Pause simulation" aria-pressed="false">Ⅱ</button></div>
+      <button id="reset" class="reset-button"><span aria-hidden="true">↺</span> Restore the stones <kbd>R</kbd></button>
+    </div>
+  </aside>
+  <div class="scene-caption"><span class="live-dot"></span><span id="scene-state">THE ANCIENT CIRCLE</span><span class="caption-rule"></span><span id="stone-count"></span></div>
+  <nav class="toolbar" aria-label="Interaction mode">
+    <div class="mode-group"><button id="explore" class="active" aria-pressed="true"><span aria-hidden="true">◎</span> Explore</button><button id="impact" aria-pressed="false"><span aria-hidden="true">↗</span> Launch</button></div>
+    <span class="toolbar-divider"></span><button id="shockwave" title="Release an outward impulse through the stones"><span aria-hidden="true">◉</span> Shockwave</button>
+    <span class="toolbar-divider"></span><button id="camera-home" aria-label="Return to the starting view" title="Reset view"><span aria-hidden="true">⌂</span></button>
+  </nav>
+  <div class="interaction-hint" id="hint">Drag to orbit <span>·</span> Scroll to explore <span>·</span> Right-drag to pan</div>
+  <div class="scene-stats" aria-label="Simulation statistics"><span id="fps">—</span> FPS <span class="stats-divider">/</span> <span id="body-count">0</span> BODIES</div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="about"><button id="about-close" class="dialog-close" aria-label="Close information">×</button><span class="eyebrow">A PLACE BETWEEN PAST & PRESENT</span><h2>A living monument.</h2><p>An interactive interpretation of Stonehenge: the outer sarsen circle, a rising horseshoe of trilithons, smaller bluestones, and the surrounding earthwork.</p><p>Proportions follow English Heritage’s published measurements. The ruin arrangement is approximate, not an archaeological survey. Impact strength and fracture behavior are tuned for exploration.</p><p>Choose <b>Launch</b>, then click or tap a stone to throw a heavy sphere. Dragging always moves the camera. Try a shockwave in slow motion, then restore the stones.</p><p class="credits">Created by Gan Tu, Michael Gibbes & Noah Jacobs. Rebuilt with Three.js and Rapier. CC0 stone scan and sky by <a href="https://polyhaven.com" target="_blank" rel="noopener">Poly Haven</a>. Grass by Blender Foundation, Lamoot & qubodup via <a href="https://opengameart.org/content/dark-grass" target="_blank" rel="noopener">OpenGameArt</a> (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>, color adjusted). <a href="https://www.english-heritage.org.uk/visit/places/stonehenge/" target="_blank" rel="noopener">Explore the real Stonehenge ↗</a></p></dialog>
+  <script type="module" src="/src/main.js"></script>
+</body>
 </html>
